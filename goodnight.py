@@ -8,7 +8,7 @@ load_dotenv()
 
 # read HUEKEY environmental variable
 hk = os.getenv("HUEKEY")
-
+print(hk)
 # create base url
 url = "http://192.168.0.108/api/"+hk
 
@@ -24,14 +24,21 @@ for i in dict:
 
 # this will be a sequence
 # Dylan Office - 5, Hall Left - 6, and LR leopard - 3
-
-requests.put(url+"/5/status", json={'bri':1, 'on': True})
-requests.put(url+"/6/status", json={'bri':1, 'on': True})
-requests.put(url+"/3/status", json={'bri':1, 'on': True})
+onoff = True
+requests.put(url+"/lights/5/state", json={'on': onoff, 'bri': 1})
+requests.put(url+"/lights/6/state", json={'on': onoff, 'bri': 1})
+requests.put(url+"/lights/3/state", json={'on': onoff, 'bri': 1})
+print('sleep 60')
 time.sleep(60)
-
-requests.put(url+"/5/status", json={'on': False})
+print('end sleep 60')
+requests.put(url+"/lights/5/state", json={'on': False})
+print('dylan off')
 time.sleep(15)
-requests.put(url+"/6/status", json={'on': False})
+print('end sleep 15')
+requests.put(url+"/lights/6/state", json={'on': False})
+print('hall off')
 time.sleep(30)
-requests.put(url+"/3/status", json={'on': False})
+print('end sleep 30')
+requests.put(url+"/lights/3/state", json={'on': False})
+print('leopard off')
+
