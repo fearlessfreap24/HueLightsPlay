@@ -1,6 +1,6 @@
 # HueLightsPlay
 
-This is a script for accessing my Hue hub at homem to play with.
+This is a script for accessing my Hue hub at home to play with.
 
 references:
 
@@ -12,3 +12,6 @@ https://developers.meethue.com/develop/get-started-2/
 
 Python dotenv
 https://pypi.org/project/python-dotenv/
+
+Python's time.sleep()
+https://www.pythoncentral.io/pythons-time-sleep-pause-wait-sleep-stop-your-code/
