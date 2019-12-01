@@ -25,13 +25,13 @@ for i in dict:
 # this will be a sequence
 # Dylan Office - 5, Hall Left - 6, and LR leopard - 3
 
-requests.put(url+"/5/status", json={'bri':1, 'on': true})
-requests.put(url+"/6/status", json={'bri':1, 'on': true})
-requests.put(url+"/3/status", json={'bri':1, 'on': true})
+requests.put(url+"/5/status", json={'bri':1, 'on': True})
+requests.put(url+"/6/status", json={'bri':1, 'on': True})
+requests.put(url+"/3/status", json={'bri':1, 'on': True})
 time.sleep(60)
 
-requests.put(url+"/5/status", json={'on': false})
+requests.put(url+"/5/status", json={'on': False})
 time.sleep(15)
-requests.put(url+"/6/status", json={'on': false})
+requests.put(url+"/6/status", json={'on': False})
 time.sleep(30)
-requests.put(url+"/3/status", json={'on': false})
+requests.put(url+"/3/status", json={'on': False})
