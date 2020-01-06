@@ -15,3 +15,6 @@ https://pypi.org/project/python-dotenv/
 
 Python's time.sleep()
 https://www.pythoncentral.io/pythons-time-sleep-pause-wait-sleep-stop-your-code/
+
+Flask
+https://flask.palletsprojects.com/en/1.1.x/
