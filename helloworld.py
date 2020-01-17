@@ -53,3 +53,16 @@ def dylan():
 
 	# return to the lights.html page
 	return redirect("./lights")
+
+@app.route('/leopard')
+def leopard():
+
+	# create base url
+	url = "http://" + hip + "/api/" + hk
+
+	# change light state to the opposite of the current state
+	requests.put(url+"/lights/5/state", json={'on': False })
+	requests.put(url+"/lights/3/state", json={'on': False })
+
+	# return to the lights.html page
+	return redirect("./lights")
