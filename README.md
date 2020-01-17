@@ -18,3 +18,6 @@ https://www.pythoncentral.io/pythons-time-sleep-pause-wait-sleep-stop-your-code/
 
 Flask
 https://flask.palletsprojects.com/en/1.1.x/
+
+Jinja
+https://jinja.palletsprojects.com/en/2.10.x/api/#basics
