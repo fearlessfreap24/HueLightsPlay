@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lights</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Number</th>
+        <th>Name</th>
+        <th>State</th>
+    </tr>
+    {% for i in dict %}
+    <tr>
+        <td>{{ i }}</td>
+        <td>{{ dict[i]['name'] }}</td>
+        <td>{{ dict[i]['state']['on'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<p>
+    <a href="./dylan">Turn on/off my light</a>
+</p>
+</body>
+</html>
