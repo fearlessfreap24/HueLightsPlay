@@ -13,22 +13,6 @@ hip = os.getenv("HUEIP")
 
 app = Flask(__name__)
 
-def getLights():
-    # create base url
-    url = "http://"+hip+"/api/"+hk
-
-    # getting lights data
-    r = requests.get(url+"/lights")
-
-    # turn lights JSON into a dict for reading
-    dict = r.json()
-
-    light = "<table><tr><th>Number</th><th>Name</th><th>State</th></tr>"
-    for i in dict:
-        light = light + "<tr><td>{}</td><td>{}</td><td>{}</td></tr>".format(i, dict[i]['name'], dict[i]['state']['on'])
-    light = light + "</table><p><a href=\"./dylan\">Turn on/off my light</a></p>"
-    return light
-
 @app.route('/')
 def index():
 	return 'Index Page'
@@ -47,14 +31,25 @@ def lights():
 
     # turn lights JSON into a dict for reading
     dict = r.json()
-
+    # render the template and pass dict to template
     return render_template('lights.html', dict=dict)
 
 @app.route('/dylan')
 def dylan():
+    # request info for light 5
 	light5 = requests.get("http://" + hip + "/api/" + hk + "/lights/5/")
+
+	# create dict for reading
 	control5 = light5.json()
+
+	# remember the current stae of hte light
 	currStatus = control5['state']['on']
+
+	# create base url
 	url = "http://" + hip + "/api/" + hk
+
+	# change light state to the opposite of the current state
 	requests.put(url+"/lights/5/state", json={'on': not currStatus})
+
+	# return to the lights.html page
 	return redirect("./lights")
