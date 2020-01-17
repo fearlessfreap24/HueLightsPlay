@@ -2,7 +2,7 @@ import requests
 import os
 import time
 from dotenv import load_dotenv
-from flask import Flask,redirect
+from flask import Flask,redirect,render_template
 
 # read .env file to get Hue Key
 load_dotenv()
@@ -39,7 +39,16 @@ def hello():
 
 @app.route('/lights')
 def lights():
-    return getLights()
+    # create base url
+    url = "http://"+hip+"/api/"+hk
+
+    # getting lights data
+    r = requests.get(url+"/lights")
+
+    # turn lights JSON into a dict for reading
+    dict = r.json()
+
+    return render_template('lights.html', dict=dict)
 
 @app.route('/dylan')
 def dylan():
