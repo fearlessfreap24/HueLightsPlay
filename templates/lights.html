@@ -15,7 +15,8 @@
     <tr>
         <td>{{ i }}</td>
         <td>{{ dict[i]['name'] }}</td>
-        <td>{{ dict[i]['state']['on'] }}</td>
+        <td>{% if dict[i]['state']['on'] == False %} Off
+        {% else %} On {% endif %}</td>
     </tr>
     {% endfor %}
 </table>
