@@ -11,11 +11,13 @@ load_dotenv()
 hk = os.getenv("HUEKEY")
 hip = os.getenv("HUEIP")
 
+headerinfo = {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/"}
+
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-	return render_template("index.html")
+	return render_template("index.html", header=headerinfo)
 
 @app.route('/hello/')
 def hello():
@@ -32,7 +34,7 @@ def lights():
     # turn lights JSON into a dict for reading
     dict = r.json()
     # render the template and pass dict to template
-    return render_template('lights.html', dict=dict)
+    return render_template('lights.html', dict=dict, header=headerinfo)
 
 @app.route('/dylan')
 def dylan():
@@ -66,3 +68,7 @@ def leopard():
 
 	# return to the lights.html page
 	return redirect("./lights")
+
+@app.route('/special')
+def special():
+    return render_template("./special.html", header=headerinfo)
