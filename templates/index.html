@@ -15,18 +15,12 @@
 
     <!-- Links -->
     <ul class="navbar-nav">
+        {% for i in header %}
         <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="{{ header[i] }}">{{ i }}</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/lights">Lights</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Rooms</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/special">Special Functions</a>
-        </li>
+        {% endfor %}
+    </ul>
     </ul>
 
 </nav>
