@@ -15,22 +15,15 @@
 
     <!-- Links -->
     <ul class="navbar-nav">
+        {% for i in header %}
         <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="{{ header[i] }}">{{ i }}</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/lights">Lights</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Rooms</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/special">Special Functions</a>
-        </li>
+        {% endfor %}
     </ul>
 
 </nav>
-<div class="container">
+<div class="container-fluid">
 <table>
     <tr>
         <th>Number</th>
@@ -46,14 +39,6 @@
     </tr>
     {% endfor %}
 </table>
-</div>
-<div class="container-fluid">
-<p>
-    <a href="./dylan">Turn on/off my light</a>
-</p>
-<p>
-    <a href="./leopard">Turn off night lights</a>
-</p>
 </div>
 </body>
 </html>
