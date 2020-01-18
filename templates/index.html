@@ -28,29 +28,5 @@
 
 </nav>
 <div class="container">
-<table>
-    <tr>
-        <th>Number</th>
-        <th>Name</th>
-        <th>State</th>
-    </tr>
-    {% for i in dict %}
-    <tr>
-        <td>{{ i }}</td>
-        <td>{{ dict[i]['name'] }}</td>
-        <td>{% if dict[i]['state']['on'] == False %} Off
-        {% else %} On {% endif %}</td>
-    </tr>
-    {% endfor %}
-</table>
+    Home Page
 </div>
-<div class="container-fluid">
-<p>
-    <a href="./dylan">Turn on/off my light</a>
-</p>
-<p>
-    <a href="./leopard">Turn off night lights</a>
-</p>
-</div>
-</body>
-</html>
