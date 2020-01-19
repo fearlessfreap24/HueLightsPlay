@@ -30,11 +30,14 @@
             <th>Any On</th>
             <th>Current Brightness</th>
         </tr>
-            {% for i in dict %}
+        {% for i in dict %}
+        <tr>
             <td>{{ dict[i]['name'] }}</td>
             <td>{{ dict[i]['state']['all_on'] }}</td>
             <td>{{ dict[i]['state']['any_on'] }}</td>
             <td>{{ dict[i]['action']['bri'] }}</td>
-            {% endfor %}}
+        </tr>{% endfor %}
     </table>
 </div>
+</body>
+</html>
