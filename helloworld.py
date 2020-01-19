@@ -77,7 +77,7 @@ def special():
 @app.route('/rooms')
 def rooms():
 	r = requests.get(url+"/groups")
-	groups = str(r.json())
-	return groups
+	groups = r.json()
+	return render_template("./rooms.html", header=headerinfo, dict=groups)
 
 
