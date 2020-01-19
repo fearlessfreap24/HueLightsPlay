@@ -76,6 +76,8 @@ def special():
 
 @app.route('/rooms')
 def rooms():
-
+	r = requests.get(url+"/groups")
+	groups = str(r.json())
+	return groups
 
 
