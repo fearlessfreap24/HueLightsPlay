@@ -14,7 +14,7 @@ hip = os.getenv("HUEIP")
 # create base url
 url = "http://" + hip + "/api/" + hk
 
-headerinfo = {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/"}
+headerinfo = {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/rooms"}
 
 app = Flask(__name__)
 
