@@ -11,6 +11,9 @@ load_dotenv()
 hk = os.getenv("HUEKEY")
 hip = os.getenv("HUEIP")
 
+# create base url
+url = "http://" + hip + "/api/" + hk
+
 headerinfo = {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/"}
 
 app = Flask(__name__)
@@ -19,36 +22,34 @@ app = Flask(__name__)
 def index():
 	return render_template("index.html", header=headerinfo)
 
+
 @app.route('/hello/')
 def hello():
 	return 'Hello World'
 
+
 @app.route('/lights')
 def lights():
-    # create base url
-    url = "http://"+hip+"/api/"+hk
 
-    # getting lights data
+	# getting lights data
     r = requests.get(url+"/lights")
 
     # turn lights JSON into a dict for reading
-    dict = r.json()
+    dicto = r.json()
     # render the template and pass dict to template
-    return render_template('lights.html', dict=dict, header=headerinfo)
+    return render_template('lights.html', dict=dicto, header=headerinfo)
+
 
 @app.route('/dylan')
 def dylan():
     # request info for light 5
-	light5 = requests.get("http://" + hip + "/api/" + hk + "/lights/5/")
+	light5 = requests.get(url+"/lights/5/")
 
 	# create dict for reading
 	control5 = light5.json()
 
-	# remember the current stae of hte light
+	# remember the current state of the light
 	currStatus = control5['state']['on']
-
-	# create base url
-	url = "http://" + hip + "/api/" + hk
 
 	# change light state to the opposite of the current state
 	requests.put(url+"/lights/5/state", json={'on': not currStatus})
@@ -56,11 +57,9 @@ def dylan():
 	# return to the lights.html page
 	return redirect("./lights")
 
+
 @app.route('/leopard')
 def leopard():
-
-	# create base url
-	url = "http://" + hip + "/api/" + hk
 
 	# change light state to the opposite of the current state
 	requests.put(url+"/lights/5/state", json={'on': False })
@@ -69,6 +68,14 @@ def leopard():
 	# return to the lights.html page
 	return redirect("./lights")
 
+
 @app.route('/special')
 def special():
     return render_template("./special.html", header=headerinfo)
+
+
+@app.route('/rooms')
+def rooms():
+
+
+
