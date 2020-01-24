@@ -1,30 +1,19 @@
 import requests
-import os
-import time
-from dotenv import load_dotenv
 from flask import Flask,redirect,render_template
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-
-# # read .env file to get Hue Key
-# load_dotenv()
-
 # read HUEKEY environmental variable
-# hk = os.getenv("HUEKEY")
-# hip = os.getenv("HUEIP")
-
 hk = app.config["HUEKEY"]
 hip = app.config["HUEIP"]
 
 # create base url
 url = "http://" + hip + "/api/" + hk
 
+# a dict to pass info for nav bar to jinja
 headerinfo = {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/rooms"}
-
-
 
 
 # home page
