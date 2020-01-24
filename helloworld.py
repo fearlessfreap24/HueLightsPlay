@@ -85,13 +85,31 @@ def special():
 @app.route('/rooms')
 def rooms():
 
-    # get group details
+	# get group details
 	r = requests.get(url+"/groups")
 
-    # change JSON to dict for reading
+	# change JSON to dict for reading
 	groups = r.json()
 
-    # render rooms.html and pass header and room info to page
+	# render rooms.html and pass header and room info to page
 	return render_template("./rooms.html", header=headerinfo, dict=groups)
 
 
+# morning on routine
+@app.route('/morning')
+def morning():
+
+	# turn on bedroom lights at full brightness
+	requests.put(url + "/lights/1/state", json={'on': True, 'bri': 254})
+	requests.put(url + "/lights/12/state", json={'on': True, 'bri': 254})
+
+	# turn on living room light at full brightness
+	requests.put(url + "/lights/3/state", json={'on': True, 'bri': 254})
+	requests.put(url + "/lights/4/state", json={'on': True, 'bri': 254})
+
+	# turn on hall lights at half brightness
+	requests.put(url + "/lights/6/state", json={'on': True, 'bri': 127})
+	requests.put(url + "/lights/8/state", json={'on': True, 'bri': 127})
+
+	# send back to lights page
+	return redirect("./lights")
