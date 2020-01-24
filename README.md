@@ -21,3 +21,7 @@ https://flask.palletsprojects.com/en/1.1.x/
 
 Jinja
 https://jinja.palletsprojects.com/en/2.10.x/api/#basics
+
+The Flask Mega-Tutorial Part III: Web Forms
+https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
+
