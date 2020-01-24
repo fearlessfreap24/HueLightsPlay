@@ -3,20 +3,29 @@ import os
 import time
 from dotenv import load_dotenv
 from flask import Flask,redirect,render_template
+from config import Config
 
-# read .env file to get Hue Key
-load_dotenv()
+app = Flask(__name__)
+app.config.from_object(Config)
+
+
+# # read .env file to get Hue Key
+# load_dotenv()
 
 # read HUEKEY environmental variable
-hk = os.getenv("HUEKEY")
-hip = os.getenv("HUEIP")
+# hk = os.getenv("HUEKEY")
+# hip = os.getenv("HUEIP")
+
+hk = app.config["HUEKEY"]
+hip = app.config["HUEIP"]
 
 # create base url
 url = "http://" + hip + "/api/" + hk
 
 headerinfo = {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/rooms"}
 
-app = Flask(__name__)
+
+
 
 # home page
 @app.route('/')
