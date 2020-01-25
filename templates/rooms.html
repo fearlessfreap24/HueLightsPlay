@@ -1,27 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Lights</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-</head>
-<body>
-<!-- A grey horizontal navbar that becomes vertical on small screens -->
-<nav class="navbar navbar-expand-sm bg-light">
+{% extends 'base.html' %}
 
-    <!-- Links -->
-    <ul class="navbar-nav">
-        {% for i in header %}
-        <li class="nav-item">
-            <a class="nav-link" href="{{ header[i] }}">{{ i }}</a>
-        </li>
-        {% endfor %}
-    </ul>
-</nav>
+{% block title %}Rooms{% endblock %}
+
+{% block content %}
 <div class="container-fluid">
     <table class="table">
         <tr>
@@ -40,5 +21,4 @@
         {% endfor %}
     </table>
 </div>
-</body>
-</html>
+{% endblock %}
