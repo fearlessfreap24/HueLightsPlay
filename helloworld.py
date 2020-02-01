@@ -96,7 +96,6 @@ def rooms():
 
 
 # morning on routine
-# !!!!!!! NEED TO CHANGE TO ROOM ACTION INSTEAD OF INDIVIDUAL LIGHT ACTION !!!!!!!!
 @app.route('/morning')
 def morning():
 
@@ -107,8 +106,7 @@ def morning():
 	requests.put(url + "/groups/1/action", json={'on': True, 'bri': 254})
 
 	# turn on hall lights at half brightness
-	requests.put(url + "/lights/6/state", json={'on': True, 'bri': 127})
-	requests.put(url + "/lights/8/state", json={'on': True, 'bri': 127})
+	requests.put(url + "/groups/5/action", json={'on': True, 'bri': 127})
 
 	# send back to lights page
 	return redirect("./lights")
