@@ -96,6 +96,7 @@ def rooms():
 
 
 # morning on routine
+# !!!!!!! NEED TO CHANGE TO ROOM ACTION INSTEAD OF INDIVIDUAL LIGHT ACTION !!!!!!!!
 @app.route('/morning')
 def morning():
 
@@ -110,6 +111,29 @@ def morning():
 	# turn on hall lights at half brightness
 	requests.put(url + "/lights/6/state", json={'on': True, 'bri': 127})
 	requests.put(url + "/lights/8/state", json={'on': True, 'bri': 127})
+
+	# send back to lights page
+	return redirect("./lights")
+
+
+# routine for darken ship
+@app.route('/dogzebra')
+def dogzebra():
+
+	# get group details
+	r = requests.get(url+"/groups")
+
+	# change JSON to dict for reading
+	groups = r.json()
+
+	# living room = 1
+	# master bedroom = 2
+	# paige's office = 3
+	# dylan's office = 4
+	requests.put(url + "/groups/1/action", json={'on': False})
+	requests.put(url + "/groups/2/action", json={'on': False})
+	requests.put(url + "/groups/3/action", json={'on': False})
+	requests.put(url + "/groups/4/action", json={'on': False})
 
 	# send back to lights page
 	return redirect("./lights")
