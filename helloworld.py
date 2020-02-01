@@ -101,12 +101,10 @@ def rooms():
 def morning():
 
 	# turn on bedroom lights at full brightness
-	requests.put(url + "/lights/1/state", json={'on': True, 'bri': 254})
-	requests.put(url + "/lights/12/state", json={'on': True, 'bri': 254})
+	requests.put(url + "/groups/2/action", json={'on': True, 'bri': 254})
 
 	# turn on living room light at full brightness
-	requests.put(url + "/lights/3/state", json={'on': True, 'bri': 254})
-	requests.put(url + "/lights/4/state", json={'on': True, 'bri': 254})
+	requests.put(url + "/groups/1/action", json={'on': True, 'bri': 254})
 
 	# turn on hall lights at half brightness
 	requests.put(url + "/lights/6/state", json={'on': True, 'bri': 127})
