@@ -128,10 +128,12 @@ def dogzebra():
 	# master bedroom = 2
 	# paige's office = 3
 	# dylan's office = 4
+	# hallway = 5
 	requests.put(url + "/groups/1/action", json={'on': False})
 	requests.put(url + "/groups/2/action", json={'on': False})
 	requests.put(url + "/groups/3/action", json={'on': False})
 	requests.put(url + "/groups/4/action", json={'on': False})
+	requests.put(url + "/groups/5/action", json={'on': False})
 
 	# send back to lights page
 	return redirect("./lights")
