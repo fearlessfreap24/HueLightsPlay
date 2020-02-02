@@ -16,13 +16,14 @@ def url():
 
 
 # a dict to pass info for nav bar to jinja
-headerinfo = {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/rooms"}
+def headerinfo():
+	return {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/rooms"}
 
 
 # home page
 @app.route('/')
 def index():
-	return render_template("index.html", header=headerinfo)
+	return render_template("index.html", header=headerinfo())
 
 
 # test page
@@ -42,7 +43,7 @@ def lights():
     dicto = r.json()
 
     # render the template and pass dict to template
-    return render_template('lights.html', dict=dicto, header=headerinfo)
+    return render_template('lights.html', dict=dicto, header=headerinfo())
 
 
 # function for dylan light on/off
@@ -81,7 +82,7 @@ def leopard():
 def special():
 
     # render special.html and pass header info
-    return render_template("./special.html", header=headerinfo)
+    return render_template("./special.html", header=headerinfo())
 
 
 # a page to display rooms and rooms stauts
@@ -95,7 +96,7 @@ def rooms():
 	groups = r.json()
 
 	# render rooms.html and pass header and room info to page
-	return render_template("./rooms.html", header=headerinfo, dict=groups)
+	return render_template("./rooms.html", header=headerinfo(), dict=groups)
 
 
 # morning on routine
