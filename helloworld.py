@@ -9,8 +9,11 @@ app.config.from_object(Config)
 hk = app.config["HUEKEY"]
 hip = app.config["HUEIP"]
 
-# create base url
-url = "http://" + hip + "/api/" + hk
+
+# routine to create base url
+def url():
+	return str("http://" + hip + "/api/" + hk)
+
 
 # a dict to pass info for nav bar to jinja
 headerinfo = {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/rooms"}
@@ -33,7 +36,7 @@ def hello():
 def lights():
 
 	# getting lights data
-    r = requests.get(url+"/lights")
+    r = requests.get(url()+"/lights")
 
     # turn lights JSON into a dict for reading
     dicto = r.json()
@@ -46,7 +49,7 @@ def lights():
 @app.route('/dylan')
 def dylan():
     # request info for light 5
-	light5 = requests.get(url+"/lights/5/")
+	light5 = requests.get(url()+"/lights/5/")
 
 	# create dict for reading
 	control5 = light5.json()
@@ -55,7 +58,7 @@ def dylan():
 	currStatus = control5['state']['on']
 
 	# change light state to the opposite of the current state
-	requests.put(url+"/lights/5/state", json={'on': not currStatus})
+	requests.put(url()+"/lights/5/state", json={'on': not currStatus})
 
 	# return to the lights.html page
 	return redirect("./lights")
@@ -66,8 +69,8 @@ def dylan():
 def leopard():
 
 	# change light state to off
-	requests.put(url+"/lights/5/state", json={'on': False })
-	requests.put(url+"/lights/3/state", json={'on': False })
+	requests.put(url()+"/lights/5/state", json={'on': False })
+	requests.put(url()+"/lights/3/state", json={'on': False })
 
 	# return to the lights.html page
 	return redirect("./lights")
@@ -86,7 +89,7 @@ def special():
 def rooms():
 
 	# get group details
-	r = requests.get(url+"/groups")
+	r = requests.get(url()+"/groups")
 
 	# change JSON to dict for reading
 	groups = r.json()
@@ -100,13 +103,13 @@ def rooms():
 def morning():
 
 	# turn on bedroom lights at full brightness
-	requests.put(url + "/groups/2/action", json={'on': True, 'bri': 254})
+	requests.put(url() + "/groups/2/action", json={'on': True, 'bri': 254})
 
 	# turn on living room light at full brightness
-	requests.put(url + "/groups/1/action", json={'on': True, 'bri': 254})
+	requests.put(url() + "/groups/1/action", json={'on': True, 'bri': 254})
 
 	# turn on hall lights at half brightness
-	requests.put(url + "/groups/5/action", json={'on': True, 'bri': 127})
+	requests.put(url() + "/groups/5/action", json={'on': True, 'bri': 127})
 
 	# send back to lights page
 	return redirect("./lights")
@@ -117,7 +120,7 @@ def morning():
 def dogzebra():
 
 	# get group details
-	r = requests.get(url+"/groups")
+	r = requests.get(url()+"/groups")
 
 	# change JSON to dict for reading
 	groups = r.json()
@@ -127,11 +130,11 @@ def dogzebra():
 	# paige's office = 3
 	# dylan's office = 4
 	# hallway = 5
-	requests.put(url + "/groups/1/action", json={'on': False})
-	requests.put(url + "/groups/2/action", json={'on': False})
-	requests.put(url + "/groups/3/action", json={'on': False})
-	requests.put(url + "/groups/4/action", json={'on': False})
-	requests.put(url + "/groups/5/action", json={'on': False})
+	requests.put(url() + "/groups/1/action", json={'on': False})
+	requests.put(url() + "/groups/2/action", json={'on': False})
+	requests.put(url() + "/groups/3/action", json={'on': False})
+	requests.put(url() + "/groups/4/action", json={'on': False})
+	requests.put(url() + "/groups/5/action", json={'on': False})
 
 	# send back to lights page
 	return redirect("./lights")
