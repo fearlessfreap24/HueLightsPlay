@@ -1,6 +1,7 @@
 import requests
 from flask import Flask,redirect,render_template
 from config import Config
+from roomform import RoomForm
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -139,3 +140,9 @@ def dogzebra():
 
 	# send back to lights page
 	return redirect("./lights")
+
+
+@app.route('/roomform')
+def roomform():
+	form = RoomForm()
+	return render_template('./roomform.html', header=headerinfo(), form=form)
