@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired
 
 
 class LoginForm(FlaskForm):
-    room = StringField('Username', validators=[DataRequired()])
+    room = StringField('Room', validators=[DataRequired()])
     onoff = BooleanField('On/Off')
-    intensity = StringField('Intensity')
+    intensity = StringField('Intensity\n1-256')
     submit = SubmitField('Submit')

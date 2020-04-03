@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Room Form{% endblock %}
+
+{% block content %}
+    <h1>Room Setting</h1>
+    <form action="" method="post" novalidate>
+        {{ roomform.hidden_tag() }}
+        <p>
+            {{ roomform.room.label }}<br>
+            {{ roomform.room(size=32) }}
+        </p>
+        <p>
+            {{ roomform.intensity.label }}<br>
+            {{ form.intensity(size=32) }}
+        </p>
+        <p>{{ roomform.onoff() }} {{ form.onoff.label }}</p>
+        <p>{{ roomform.submit() }}</p>
+    </form>
+{% endblock %}
