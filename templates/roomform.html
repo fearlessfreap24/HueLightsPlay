@@ -5,16 +5,16 @@
 {% block content %}
     <h1>Room Setting</h1>
     <form action="" method="post" novalidate>
-        {{ roomform.hidden_tag() }}
+        {{ form.hidden_tag() }}
         <p>
-            {{ roomform.room.label }}<br>
-            {{ roomform.room(size=32) }}
+            {{ form.room.label }}<br>
+            {{ form.room(size=32) }}
         </p>
         <p>
-            {{ roomform.intensity.label }}<br>
+            {{ form.intensity.label }}<br>
             {{ form.intensity(size=32) }}
         </p>
-        <p>{{ roomform.onoff() }} {{ form.onoff.label }}</p>
-        <p>{{ roomform.submit() }}</p>
+        <p>{{ form.onoff() }} {{ form.onoff.label }}</p>
+        <p>{{ form.submit() }}</p>
     </form>
 {% endblock %}
