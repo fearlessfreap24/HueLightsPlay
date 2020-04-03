@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 
 
-class LoginForm(FlaskForm):
+class RoomForm(FlaskForm):
     room = StringField('Room', validators=[DataRequired()])
     onoff = BooleanField('On/Off')
     intensity = StringField('Intensity\n1-256')
