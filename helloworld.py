@@ -145,5 +145,5 @@ def dogzebra():
 def roomform():
 	groups = getrooms()
 	form = RoomForm()
-	form.room.choices = [room.name for room in groups]
+	form.room.choices = [(room, groups[room]['name']) for room in groups]
 	return render_template('./roomform.html', header=headerinfo(), form=form)
