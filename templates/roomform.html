@@ -3,6 +3,9 @@
 {% block title %}Room Form{% endblock %}
 
 {% block content %}
+{% for error in form.errors %}
+    <span style="color: red;">[{{ error }}]</span>
+{% endfor %}
 <div class="container-fluid">
     <h1>Room Setting</h1>
     <form action="" method="post" novalidate>
