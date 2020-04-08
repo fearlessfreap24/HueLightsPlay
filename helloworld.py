@@ -1,5 +1,5 @@
 import requests
-from flask import Flask,redirect,render_template
+from flask import Flask,redirect,render_template, flash
 from config import Config
 from roomform import RoomForm
 
@@ -141,9 +141,24 @@ def dogzebra():
 	return redirect("./lights")
 
 
-@app.route('/roomform')
+@app.route('/roomform', methods=['GET', 'POST'])
 def roomform():
 	groups = getrooms()
 	form = RoomForm()
-	form.room.choices = [(room, groups[room]['name']) for room in groups]
-	return render_template('./roomform.html', header=headerinfo(), form=form)
+	form.room.choices = [(int(room), groups[room]['name']) for room in groups]
+	print(f"{form.validate_on_submit()}")
+	if form.validate_on_submit():
+		room = form.room.data
+		intensity = form.intensity.data
+		onoff = form.onoff.data
+
+		print(f'{room} {intensity} {onoff}')
+
+		requests.put(url() + f"/groups/{room}/action", json={'on': onoff, 'bri': int(intensity)})
+
+		return redirect("./rooms")
+	else:
+		# groups = getrooms()
+		# form.room.choices = [(room, groups[room]['name']) for room in groups]
+		flash(form.errors)
+		return render_template('./roomform.html', header=headerinfo(), form=form)
