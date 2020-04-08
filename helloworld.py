@@ -30,6 +30,14 @@ def getrooms():
 	return dicto
 
 
+def getlights():
+	# getting lights data
+	r = requests.get(url() + "/lights")
+	# turn lights JSON into a dict for reading
+	dicto = r.json()
+	return dicto
+
+
 # home page
 @app.route('/')
 def index():
@@ -45,12 +53,8 @@ def hello():
 # display lights and light status
 @app.route('/lights')
 def lights():
-
-	# getting lights data
-    r = requests.get(url()+"/lights")
-
-    # turn lights JSON into a dict for reading
-    dicto = r.json()
+	# get lights information
+    dicto = getlights()
 
     # render the template and pass dict to template
     return render_template('lights.html', dict=dicto, header=headerinfo())
@@ -98,6 +102,7 @@ def special():
 # a page to display rooms and rooms stauts
 @app.route('/rooms')
 def rooms():
+	# get room information
     groups = getrooms()
 
     # render rooms.html and pass header and room info to page
