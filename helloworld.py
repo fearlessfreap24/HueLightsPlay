@@ -21,6 +21,15 @@ def headerinfo():
 	return {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/rooms"}
 
 
+# method to retrieve room names
+def getrooms():
+	# http request for rooms
+	r = requests.get(url()+"/lights")
+	# turn lights JSON into a dict for reading
+	dicto = r.json()
+	return dicto
+
+
 # home page
 @app.route('/')
 def index():
@@ -36,12 +45,7 @@ def hello():
 # display lights and light status
 @app.route('/lights')
 def lights():
-
-	# getting lights data
-    r = requests.get(url()+"/lights")
-
-    # turn lights JSON into a dict for reading
-    dicto = r.json()
+    dicto = getrooms()
 
     # render the template and pass dict to template
     return render_template('lights.html', dict=dicto, header=headerinfo())
