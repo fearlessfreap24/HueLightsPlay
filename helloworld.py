@@ -124,12 +124,7 @@ def morning():
 # routine for darken ship
 @app.route('/dogzebra')
 def dogzebra():
-
-	# get group details
-	r = requests.get(url()+"/groups")
-
-	# change JSON to dict for reading
-	groups = r.json()
+	groups = getrooms()
 
 	# living room = 1
 	# master bedroom = 2
@@ -148,5 +143,7 @@ def dogzebra():
 
 @app.route('/roomform')
 def roomform():
+	groups = getrooms()
 	form = RoomForm()
+	form.room.choices = [room.name for room in groups]
 	return render_template('./roomform.html', header=headerinfo(), form=form)
