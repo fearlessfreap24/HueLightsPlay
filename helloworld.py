@@ -124,7 +124,6 @@ def morning():
 # routine for darken ship
 @app.route('/dogzebra')
 def dogzebra():
-	groups = getrooms()
 
 	# living room = 1
 	# master bedroom = 2
