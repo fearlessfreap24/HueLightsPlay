@@ -4,21 +4,23 @@
 
 {% block content %}
 <div class="container-fluid">
+    <a href="roomform">
     <table class="table">
         <tr>
             <th>Name</th>
             <th>All On</th>
-            <th>Any On</th>
+<!--            <th>Any On</th>-->
             <th>Current Brightness</th>
         </tr>
         {% for i in dict %}
         <tr>
             <td>{{ dict[i]['name'] }}</td>
             <td>{{ dict[i]['state']['all_on'] }}</td>
-            <td>{{ dict[i]['state']['any_on'] }}</td>
+<!--            <td>{{ dict[i]['state']['any_on'] }}</td>-->
             <td>{{ dict[i]['action']['bri'] }}</td>
         </tr>
         {% endfor %}
     </table>
+    </a>
 </div>
 {% endblock %}
