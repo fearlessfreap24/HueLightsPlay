@@ -18,7 +18,11 @@
             {{ form.intensity.label }}<br>
             {{ form.intensity(size=32) }}
         </p>
-        <p>{{ form.onoff() }} {{ form.onoff.label }}</p>
+        <p>
+            {{ form.onoff.label }}
+            <br>
+            {{ form.onoff() }}
+        </p>
         <p>{{ form.submit() }}</p>
     </form>
 </div>
