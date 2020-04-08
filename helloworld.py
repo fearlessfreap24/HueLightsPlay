@@ -24,7 +24,7 @@ def headerinfo():
 # method to retrieve room names
 def getrooms():
 	# http request for rooms
-	r = requests.get(url()+"/lights")
+	r = requests.get(url()+"/groups")
 	# turn lights JSON into a dict for reading
 	dicto = r.json()
 	return dicto
@@ -98,10 +98,10 @@ def special():
 # a page to display rooms and rooms stauts
 @app.route('/rooms')
 def rooms():
-	groups = getrooms()
+    groups = getrooms()
 
-	# render rooms.html and pass header and room info to page
-	return render_template("./rooms.html", header=headerinfo(), dict=groups)
+    # render rooms.html and pass header and room info to page
+    return render_template("./rooms.html", header=headerinfo(), dict=groups)
 
 
 # morning on routine
