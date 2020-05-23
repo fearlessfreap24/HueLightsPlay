@@ -94,7 +94,7 @@ def leopard():
 @app.route('/special')
 def special():
     # render special.html and pass header info
-    return render_template("./special.html", header=headerinfo())
+    return render_template("./special.html", header=headerinfo(), active="Special Functions")
 
 
 # a page to display rooms and rooms stauts
@@ -104,7 +104,7 @@ def rooms():
     groups = getrooms()
 
     # render rooms.html and pass header and room info to page
-    return render_template("./rooms.html", header=headerinfo(), dict=groups)
+    return render_template("./rooms.html", header=headerinfo(), dict=groups, active="Rooms")
 
 
 # morning on routine
