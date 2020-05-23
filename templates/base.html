@@ -5,6 +5,8 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="shortcut icon" type="image/png" href="../images/favicon.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block stylesheet %}{% endblock %}
+    <!-- stylesheet for base.html -->
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -34,14 +36,17 @@
                 </nav>
             </div>
             <div class="hofwb">
-                <h5> active = {{ active }}: House of Five White Bricks</h5>
+                House of Five White Bricks
             </div>
         </div>
     </header>
-
-{% block content %}
-
-{% endblock %}
+<article>
+    <div class="article">
+        {% block content %}
+        
+        {% endblock %}
+    </div>
+</article>
 <footer>
     <div class="footer">
         Created By Dylan Perez
