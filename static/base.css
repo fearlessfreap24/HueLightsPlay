@@ -24,11 +24,11 @@ header {
 }
 
 .navitems {
-    width: 50%;
+    width: 70%;
 }
 
 .hofwb {
-    width: 50%;
+    width: 30%;
     /* align-self: flex-end; */
     text-align: right;
     vertical-align: middle;
