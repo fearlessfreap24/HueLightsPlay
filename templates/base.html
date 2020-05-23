@@ -20,15 +20,21 @@
                     <!--Links -->
                     <ul class="navbar-nav">
                         {% for i in header %}
+                        {% if active == i %}
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{{ header[i] }}">{{ i }}</a>
+                        </li>
+                        {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ header[i] }}">{{ i }}</a>
                         </li>
+                        {% endif %}
                         {% endfor %}
                     </ul>
                 </nav>
             </div>
             <div class="hofwb">
-                <h5>House of Five White Bricks</h5>
+                <h5> active = {{ active }}: House of Five White Bricks</h5>
             </div>
         </div>
     </header>

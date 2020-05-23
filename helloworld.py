@@ -41,7 +41,7 @@ def getlights():
 # home page
 @app.route('/')
 def index():
-    return render_template("index.html", header=headerinfo())
+    return render_template("index.html", header=headerinfo(), active="Home")
 
 
 # test page
@@ -57,7 +57,7 @@ def lights():
     dicto = getlights()
 
     # render the template and pass dict to template
-    return render_template('lights.html', dict=dicto, header=headerinfo())
+    return render_template('lights.html', dict=dicto, header=headerinfo(), active="Lights")
 
 
 # function for dylan light on/off

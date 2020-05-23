@@ -12,6 +12,7 @@ header {
 
 .navbar-custom .navbar-nav .nav-link {
     color: #4D1979;
+    background-color: #A3A9AC;
 }
 
 .navbar-custom .nav-item.active .nav-link {
