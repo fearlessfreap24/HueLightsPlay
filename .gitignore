@@ -1,6 +1,6 @@
 .env
 ./venv
-./images
+./static/images
 ./.idea
 ./.idea/*
 ./__pycache__
