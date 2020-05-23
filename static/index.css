@@ -1,0 +1,25 @@
+.heading {
+    font-size: xx-large;
+    font-weight: bolder;
+    text-align: center;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.article div {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.image {
+    text-align: center;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+img {
+    width: 400px;
+}

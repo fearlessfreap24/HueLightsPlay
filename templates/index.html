@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 
 {% block title %}Home Page{% endblock %}
+{% block stylesheet %}
+    <!-- stylesheet for index.html -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <p>Home Page</p>
+<div class="heading">
+    House of Five White Bricks
+</div>
+<div class="image">
+    <img src="{{ url_for('static', filename='images/hofwb.jpg') }}" alt="House of Five White Bricks">
 </div>
 {% endblock %}
