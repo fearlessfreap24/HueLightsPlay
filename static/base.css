@@ -1,0 +1,44 @@
+header {
+    width: 100%;
+    height: 20%;
+    }
+
+.header {
+    background-color: #A3A9AC;
+    color: #4D1979;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-custom .navbar-nav .nav-link {
+    color: #4D1979;
+}
+
+.navbar-custom .nav-item.active .nav-link {
+    background-color: white;
+}
+
+.navitems {
+    width: 50%;
+}
+
+.hofwb {
+    width: 50%;
+    /* align-self: flex-end; */
+    text-align: right;
+}
+
+article {
+    width: 100%;
+    height: 80%;
+}
+
+footer {
+    width: 100%;
+    height: 20%;
+}
+
+.footer {
+    background-color: #A3A9AC;
+    color: #4D1979;
+}
