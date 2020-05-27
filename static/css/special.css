@@ -25,3 +25,7 @@ Horned Frog Grey - #A3A9AC
     border-radius: 34px;
     box-shadow: 1px 1px 5px #A3A9AC;
 }
+
+.gridelement a {
+    color: #4D1979;
+}
