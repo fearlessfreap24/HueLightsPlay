@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
 {% block title %}Rooms{% endblock %}
+{% block stylesheet %}
+<!-- stylesheet for rooms.html -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/rooms.css') }}">
+{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
