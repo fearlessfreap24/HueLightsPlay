@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, redirect, render_template, flash
+from flask import Flask, redirect, render_template, flash, request
 from config import Config
 from roomform import RoomForm
 
@@ -166,3 +166,47 @@ def roomform():
         flash(form.errors)
         # display roomform.html
         return render_template('./roomform.html', header=headerinfo(), form=form)
+
+
+@app.route('/api/v1/resources/lightstatus', methods=['GET'])
+def lightstatus():
+
+    light = request.args.get('light')
+
+    return requests.get(url() + f'/lights/{light}').json()
+
+
+@app.route('/api/v1/resources/lightonoff', methods=['GET', 'POST'])
+def lightonoff():
+
+    light = request.args.get('light')
+
+    onoff = request.args.get('onoff')
+
+    if request.args.get('onoff') == 'on':
+        onoff = True
+    elif request.args.get('onoff') == 'off':
+        onoff = False
+
+    requests.put(url() + f"/lights/{light}/state", json={'on': onoff})
+
+    return requests.get(url() + f"/lights/{light}").json()
+
+
+@app.route('/api/v1/resources/lightintens', methods=['GET', 'POST'])
+def lightintens():
+
+    light = request.args.get('light')
+
+    onoff = request.args.get('onoff')
+
+    if request.args.get('onoff') == 'on':
+        onoff = True
+    elif request.args.get('onoff') == 'off':
+        onoff = False
+
+    intens = request.args.get('intens')
+
+    requests.put(url() + f"/lights/{light}/state", json={'on': onoff, 'bri': int(intens)})
+
+    return requests.get(url() + f"/lights/{light}").json()
