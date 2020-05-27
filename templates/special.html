@@ -1,20 +1,24 @@
 {% extends 'base.html' %}
 
 {% block title %}Special Functions{% endblock %}
+{% block stylesheet %}
+<!-- stylesheet for special.html -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/special.css') }}">
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <p>
+<div class="gridcontainer">
+    <div class="gridelement">
         <a href="./dylan">Turn on/off my light</a>
-    </p>
-    <p>
+    </div>
+    <div class="gridelement">
         <a href="./leopard">Turn off night lights</a>
-    </p>
-    <p>
+    </div>
+    <div class="gridelement">
         <a href="./morning">Morning On</a>
-    </p>
-    <p>
+    </div>
+    <div class="gridelement">
         <a href="./dogzebra">Darken Ship</a>
-    </p>
+    </div>
 </div>
 {% endblock %}
