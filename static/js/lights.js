@@ -23,10 +23,27 @@
 const lightstatus = (light) => {
     let xhttp = new XMLHttpRequest;
     xhttp.open('GET', '/api/v1/resources/lightstatus?light=' + light, true)
+    xhttp.send();
     xhttp.onload = function () {
         if (this.status === 200){
-            console.log(JSON.parse(this.responseText));
+            return this.responseText;
         }
     }
-    xhttp.send();
 }
+
+const lightonoff = (light, onoff) => {
+    let xhttp = new XMLHttpRequest;
+    xhttp.open('GET', '/api/v1/resources/lightonoff?light=' + light + "&onoff=" + onoff, true)
+    xhttp.send();
+    xhttp.onload = function () {
+        if (this.status === 200){
+            return xhttp.responseText;
+        }
+    }
+}
+
+const output = (id) => {
+    let ret = lightstatus(id);
+    return ret;
+}
+

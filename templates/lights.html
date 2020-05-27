@@ -1,23 +1,39 @@
 {% extends 'base.html' %}
 
 {% block title %}Lights{% endblock %}
-
+{% block stylesheet %}
+<!-- stylesheet for index.html -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/lights.css') }}">
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
-<table class="table">
-    <tr>
-        <th>Number</th>
-        <th>Name</th>
-        <th>State</th>
-    </tr>
-    {% for i in dict %}
-    <tr>
-        <td>{{ i }}</td>
-        <td>{{ dict[i]['name'] }}</td>
-        <td>{% if dict[i]['state']['on'] == False %} Off
-        {% else %} On {% endif %}</td>
-    </tr>
-    {% endfor %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Number</th>
+            <th>Name</th>
+            <th>State</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in dict %}
+        <tr>
+            <td>{{ i }}</td>
+            <td>{{ dict[i]['name'] }}</td>
+            <td>
+                <label class="switch">
+                    {% if dict[i]['state']['on'] == False %}
+                    <input type="checkbox" id="light{{ i }}" onclick="output('{{ i }}')">
+                    {% else %}
+                    <input type="checkbox" id="light{{ i }}" onclick="output('{{ i }}')" checked="True">
+                    {% endif %}
+                    <span class="slider round"></span>                
+                </label>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    
 </table>
 </div>
 <script src="{{ url_for('static', filename='js/lights.js') }}"></script>
