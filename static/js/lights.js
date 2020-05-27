@@ -31,6 +31,7 @@ const lightstatus = (light) => {
     }
 }
 
+
 const lightonoff = (light, onoff) => {
     let xhttp = new XMLHttpRequest;
     xhttp.open('GET', '/api/v1/resources/lightonoff?light=' + light + "&onoff=" + onoff, true)
@@ -41,9 +42,16 @@ const lightonoff = (light, onoff) => {
         }
     }
 }
-
 const output = (id) => {
-    let ret = lightstatus(id);
-    return ret;
+    let item = document.getElementById('light'+id);
+    console.log(item['checked']);
+    let onoff = 'on';
+    if (item['checked'] == false) {
+        onoff = 'off';
+    }
+    lightonoff(id, onoff);
+    // item['checked'] = !item['checked'];
+    return item;
+
 }
 

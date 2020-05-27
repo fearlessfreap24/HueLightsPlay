@@ -18,7 +18,7 @@
     <tbody>
         {% for i in dict %}
         <tr>
-            <td>{{ i }}</td>
+            <td><img class="lightpictures" src="/static/images/light{{ i }}.png" alt="{{ dict[i]['name'] }}" width="75px"></td>
             <td>{{ dict[i]['name'] }}</td>
             <td>
                 <label class="switch">
