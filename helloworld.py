@@ -193,20 +193,9 @@ def lightonoff():
     return requests.get(url() + f"/lights/{light}").json()
 
 
-@app.route('/api/v1/resources/lightintens', methods=['GET', 'POST'])
-def lightintens():
+@app.route('/api/v1/resources/roomstatus', methods=['GET'])
+def roomstatus():
 
-    light = request.args.get('light')
+    room = request.args.get('room')
 
-    onoff = request.args.get('onoff')
-
-    if request.args.get('onoff') == 'on':
-        onoff = True
-    elif request.args.get('onoff') == 'off':
-        onoff = False
-
-    intens = request.args.get('intens')
-
-    requests.put(url() + f"/lights/{light}/state", json={'on': onoff, 'bri': int(intens)})
-
-    return requests.get(url() + f"/lights/{light}").json()
+    return requests.get(url() + f"/groups/{room}").json()
