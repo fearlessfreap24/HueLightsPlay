@@ -39,7 +39,7 @@ header {
 
 .article {
     width: 100%;
-    min-height: 80%;
+    min-height: 100%;
 }
 
 footer {
@@ -51,8 +51,9 @@ footer {
     background-color: #A3A9AC;
     color: #4D1979;
     padding: 8px 16px 8px 16px;
-    position: fixed;
-    bottom: 0;
+    /* position: relative;
+    bottom: 0; */
     width: 100%;
     max-width: 1080px;
+    border-collapse: collapse;
 }
