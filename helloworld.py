@@ -199,3 +199,20 @@ def roomstatus():
     room = request.args.get('room')
 
     return requests.get(url() + f"/groups/{room}").json()
+
+
+@app.route('/api/v1/resources/roomonoff', methods=['GET'])
+def roomonoff():
+
+    room = request.args.get('room')
+
+    onoff = request.args.get('onoff')
+
+    if request.args.get('onoff') == 'on':
+        onoff = True
+    elif request.args.get('onoff') == "off":
+        onoff = False
+
+    requests.put(url() + f"/groups/{room}/action", json={'on': onoff})
+
+    return requests.get(url() + f"/groups/{room}").json()
