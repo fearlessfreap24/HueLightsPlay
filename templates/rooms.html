@@ -20,18 +20,24 @@
         <tbody>
             {% for i in dict %}
             <tr>
-                <td>{{ dict[i]['name'] }}</td>
+                <td>
+                    <img src="/static/images/room{{ i }}.jpg" alt="{{ dict[i]['name'] }}" width="150px">
+                </td>
                 <td>
                     <label class="switch">
                         {% if dict[i]['state']['all_on'] == False %}
-                        <input type="checkbox" id="room{{ i }}" onclick="output('{{ i }}')">
+                        <input type="checkbox" id="room{{ i }}" onclick="intens('{{ i }}')">
                         {% else %}
-                        <input type="checkbox" id="room{{ i }}" onclick="output('{{ i }}')" checked='True'>
+                        <input type="checkbox" id="room{{ i }}" onclick="intens('{{ i }}')" checked='True'>
                         {% endif %}
                         <span class="slider round"></span>                         
                     </label>
                 </td>
-                <td>{{ dict[i]['action']['bri'] }}</td>
+                <td>
+                    <div class="slidebarcontainer">
+                        <input type="range" min="1" max="255" value="{{ dict[i]['action']['bri'] }}" class="sliderbar" id="room{{ i }}">
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>        
