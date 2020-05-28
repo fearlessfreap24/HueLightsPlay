@@ -26,9 +26,9 @@
                 <td>
                     <label class="switch">
                         {% if dict[i]['state']['all_on'] == False %}
-                        <input type="checkbox" id="room{{ i }}" onclick="intens('{{ i }}')">
+                        <input type="checkbox" id="room{{ i }}" onclick="roomonoff('{{ i }}')">
                         {% else %}
-                        <input type="checkbox" id="room{{ i }}" onclick="intens('{{ i }}')" checked='True'>
+                        <input type="checkbox" id="room{{ i }}" onclick="roomonoff('{{ i }}')" checked='True'>
                         {% endif %}
                         <span class="slider round"></span>                         
                     </label>
@@ -44,4 +44,8 @@
     </table>
     <!-- </a> -->
 </div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/rooms.js') }}"></script>
 {% endblock %}
