@@ -1,0 +1,8 @@
+toggles and sliders - get info from server and verify status 
+	changed and set difference in chages to the items
+
+forms - get rid of forms and convert to API
+
+special functions - convert to use API vice flask actions
+
+pictures - change pictures to reflect light/room status
