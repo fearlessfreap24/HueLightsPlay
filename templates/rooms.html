@@ -8,7 +8,6 @@
 
 {% block content %}
 <div class="container-fluid">
-    <!-- <a href="roomform"> -->
     <table class="table table-striped">
         <thead>
             <tr>
@@ -25,7 +24,7 @@
                 </td>
                 <td>
                     <label class="switch">
-                        {% if dict[i]['state']['all_on'] == False %}
+                        {% if dict[i]['state']['any_on'] == False %}
                         <input type="checkbox" id="room{{ i }}" onclick="roomonoff('{{ i }}')">
                         {% else %}
                         <input type="checkbox" id="room{{ i }}" onclick="roomonoff('{{ i }}')" checked='True'>
@@ -43,7 +42,6 @@
             {% endfor %}
         </tbody>        
     </table>
-    <!-- </a> -->
 </div>
 {% endblock %}
 

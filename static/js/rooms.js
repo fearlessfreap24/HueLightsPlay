@@ -57,9 +57,9 @@ const roomonoff = (id) => {
 
 }
 
-const roomintens = (room, intens) => {
+const roomchange = (room, intens) => {
     let xhttp = new XMLHttpRequest;
-    xhttp.open('GET', '/api/v1/resources/roomonoff?room=' + room + "&onoff=" + onoff, true)
+    xhttp.open('GET', '/api/v1/resources/roomintens?room=' + room + "&intens=" + intens, true)
     xhttp.send();
     xhttp.onload = function () {
         if (this.status === 200){
@@ -69,8 +69,13 @@ const roomintens = (room, intens) => {
 }
 
 const roomintens = (id) => {
-    let slidebar = document.getElementById('roomslide' + id);
-    // console.error("intensity = " + slidebar.value)
+    let idname = 'roomslide' + id;
+    console.error("idname = ", idname)
+    let slidebar = document.getElementById(idname);
+    // let intens = slidebar['value'];
+    console.error("intensity = ", slidebar['value'])
+    roomchange(id, slidebar['value']);
 
+    return slidebar;
 }
 
