@@ -33,9 +33,9 @@ const lightstatus = (light) => {
 }
 
 
-const lightonoff = (light, onoff) => {
+const lightonoff = (room, onoff) => {
     let xhttp = new XMLHttpRequest;
-    xhttp.open('GET', '/api/v1/resources/lightonoff?light=' + light + "&onoff=" + onoff, true)
+    xhttp.open('GET', '/api/v1/resources/roomonoff?room=' + room + "&onoff=" + onoff, true)
     xhttp.send();
     xhttp.onload = function () {
         if (this.status === 200){
@@ -43,8 +43,9 @@ const lightonoff = (light, onoff) => {
         }
     }
 }
-const output = (id) => {
-    let item = document.getElementById('light'+id);
+
+const roomonoff = (id) => {
+    let item = document.getElementById('room'+id);
     console.log(item['checked']);
     let onoff = 'on';
     if (item['checked'] == false) {
@@ -53,6 +54,23 @@ const output = (id) => {
     lightonoff(id, onoff);
     // item['checked'] = !item['checked'];
     return item;
+
+}
+
+const roomintens = (room, intens) => {
+    let xhttp = new XMLHttpRequest;
+    xhttp.open('GET', '/api/v1/resources/roomonoff?room=' + room + "&onoff=" + onoff, true)
+    xhttp.send();
+    xhttp.onload = function () {
+        if (this.status === 200){
+            return xhttp.responseText;
+        }
+    }
+}
+
+const roomintens = (id) => {
+    let slidebar = document.getElementById('roomslide' + id);
+    // console.error("intensity = " + slidebar.value)
 
 }
 
