@@ -216,3 +216,15 @@ def roomonoff():
     requests.put(url() + f"/groups/{room}/action", json={'on': onoff})
 
     return requests.get(url() + f"/groups/{room}").json()
+
+
+@app.route('/api/v1/resources/roomintens', methods=['GET'])
+def roomintens():
+
+    room = request.args.get('room')
+
+    intens = request.args.get('intens')
+
+    requests.put(url() + f"/groups/{room}/action", json={'bri': intens})
+
+    return requests.get(url() + f"groups/{room}").json()
