@@ -25,3 +25,5 @@ https://jinja.palletsprojects.com/en/2.10.x/api/#basics
 The Flask Mega-Tutorial Part III: Web Forms
 https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
 
+A tutorial on creating basic API in Flask
+https://programminghistorian.org/en/lessons/creating-apis-with-python-and-flask#implementing-our-api
