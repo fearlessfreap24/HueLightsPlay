@@ -225,6 +225,6 @@ def roomintens():
 
     intens = request.args.get('intens')
 
-    requests.put(url() + f"/groups/{room}/action", json={'bri': intens})
+    requests.put(url() + f"/groups/{room}/action", json={'bri': int(intens)})
 
-    return requests.get(url() + f"groups/{room}").json()
+    return requests.get(url() + f"/groups/{room}").json()
