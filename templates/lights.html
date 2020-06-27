@@ -11,15 +11,14 @@
     <thead>
         <tr>
             <th>Number</th>
-            <th>Name</th>
             <th>State</th>
+            <th>Brightness</th>
         </tr>
     </thead>
     <tbody>
         {% for i in dict %}
         <tr>
             <td><img class="lightpictures" src="/static/images/light{{ i }}small.jpg" alt="{{ dict[i]['name'] }}" width="75px"></td>
-            <td>{{ dict[i]['name'] }}</td>
             <td>
                 <label class="switch">
                     {% if dict[i]['state']['on'] == False %}
@@ -29,6 +28,12 @@
                     {% endif %}
                     <span class="slider round"></span>                
                 </label>
+            </td>
+            <td>
+                <div class="slidebarcontainer">
+                    <input type="range" min="1" max="255" value="{{ dict[i]['state']['bri'] }}" 
+                    class="sliderbar" id="lightslide{{ i }}" onclick="lightintens('{{ i }}')">
+                </div>
             </td>
         </tr>
         {% endfor %}

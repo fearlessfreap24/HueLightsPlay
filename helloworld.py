@@ -228,3 +228,15 @@ def roomintens():
     requests.put(url() + f"/groups/{room}/action", json={'bri': int(intens)})
 
     return requests.get(url() + f"/groups/{room}").json()
+
+
+@app.route('/api/v1/resources/lightintens', methods=['GET'])
+def lightintens():
+
+    light = request.args.get('light')
+
+    intens = request.args.get('intens')
+
+    requests.put(url() + f"/lights/{light}/state", json={'bri': int(intens)})
+
+    return requests.get(url() + f"/lights/{light}").json()

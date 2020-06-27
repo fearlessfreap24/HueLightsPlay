@@ -21,28 +21,28 @@
     // // 404: ERROR
     // // 403: FORBIDDEN
 
-const lightstatus = (light) => {
-    let xhttp = new XMLHttpRequest;
-    xhttp.open('GET', '/api/v1/resources/lightstatus?light=' + light, true)
-    xhttp.send();
-    xhttp.onload = function () {
-        if (this.status === 200){
-            return this.responseText;
-        }
-    }
-}
+// const lightstatus = (light) => {
+//     let xhttp = new XMLHttpRequest;
+//     xhttp.open('GET', '/api/v1/resources/lightstatus?light=' + light, true)
+//     xhttp.send();
+//     xhttp.onload = function () {
+//         if (this.status === 200){
+//             return this.responseText;
+//         }
+//     }
+// }
 
 
-const lightonoff = (room, onoff) => {
-    let xhttp = new XMLHttpRequest;
-    xhttp.open('GET', '/api/v1/resources/roomonoff?room=' + room + "&onoff=" + onoff, true)
-    xhttp.send();
-    xhttp.onload = function () {
-        if (this.status === 200){
-            return xhttp.responseText;
-        }
-    }
-}
+// const lightonoff = (room, onoff) => {
+//     let xhttp = new XMLHttpRequest;
+//     xhttp.open('GET', '/api/v1/resources/roomonoff?room=' + room + "&onoff=" + onoff, true)
+//     xhttp.send();
+//     xhttp.onload = function () {
+//         if (this.status === 200){
+//             return xhttp.responseText;
+//         }
+//     }
+// }
 
 const roomonoff = (id) => {
     let item = document.getElementById('room'+id);
@@ -70,10 +70,10 @@ const roomchange = (room, intens) => {
 
 const roomintens = (id) => {
     let idname = 'roomslide' + id;
-    console.error("idname = ", idname)
+    // console.error("idname = ", idname)
     let slidebar = document.getElementById(idname);
     // let intens = slidebar['value'];
-    console.error("intensity = ", slidebar['value'])
+    // console.error("intensity = ", slidebar['value'])
     roomchange(id, slidebar['value']);
 
     return slidebar;

@@ -55,3 +55,25 @@ const output = (id) => {
 
 }
 
+const lightchange = (light, intens) => {
+    let xhttp = new XMLHttpRequest;
+    xhttp.open('GET', '/api/v1/resources/lightintens?light=' + light + "&intens=" + intens, true)
+    xhttp.send();
+    xhttp.onload = function () {
+        if (this.status === 200){
+            return xhttp.responseText;
+        }
+    }
+}
+
+const lightintens = (id) => {
+    let idname = 'lightslide' + id;
+    // console.error("idname = ", idname)
+    let slidebar = document.getElementById(idname);
+    // let intens = slidebar['value'];
+    // console.error("intensity = ", slidebar['value'])
+    lightchange(id, slidebar['value']);
+
+    return slidebar;
+}
+
