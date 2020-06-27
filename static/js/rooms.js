@@ -21,32 +21,20 @@
     // // 404: ERROR
     // // 403: FORBIDDEN
 
-// const lightstatus = (light) => {
-//     let xhttp = new XMLHttpRequest;
-//     xhttp.open('GET', '/api/v1/resources/lightstatus?light=' + light, true)
-//     xhttp.send();
-//     xhttp.onload = function () {
-//         if (this.status === 200){
-//             return this.responseText;
-//         }
-//     }
-// }
-
-
-// const lightonoff = (room, onoff) => {
-//     let xhttp = new XMLHttpRequest;
-//     xhttp.open('GET', '/api/v1/resources/roomonoff?room=' + room + "&onoff=" + onoff, true)
-//     xhttp.send();
-//     xhttp.onload = function () {
-//         if (this.status === 200){
-//             return xhttp.responseText;
-//         }
-//     }
-// }
+const lightonoff = (room, onoff) => {
+    let xhttp = new XMLHttpRequest;
+    xhttp.open('GET', '/api/v1/resources/roomonoff?room=' + room + "&onoff=" + onoff, true)
+    xhttp.send();
+    xhttp.onload = function () {
+        if (this.status === 200){
+            return xhttp.responseText;
+        }
+    }
+}
 
 const roomonoff = (id) => {
     let item = document.getElementById('room'+id);
-    console.log(item['checked']);
+    // console.log(item['checked']);
     let onoff = 'on';
     if (item['checked'] == false) {
         onoff = 'off';

@@ -44,7 +44,7 @@ const lightonoff = (light, onoff) => {
 }
 const output = (id) => {
     let item = document.getElementById('light'+id);
-    console.log(item['checked']);
+    // console.log(item['checked']);
     let onoff = 'on';
     if (item['checked'] == false) {
         onoff = 'off';
