@@ -141,31 +141,23 @@ def dogzebra():
     return redirect("./lights")
 
 
-@app.route('/roomform', methods=['GET', 'POST'])
-def roomform():
-    # get dict of rooms
-    groups = getrooms()
-    # instantiate form
-    form = RoomForm()
-    # add choices to SelectField using rooms
-    form.room.choices = [(int(room), groups[room]['name']) for room in groups]
-    # check to see if form validated
-    if form.validate_on_submit():
-        # extract data from submitted form
-        room = form.room.data
-        intensity = form.intensity.data
-        onoff = form.onoff.data
+@app.route('/prebed')
+def prebed():
+    # dylan's bed light = 1
+    # paige's bed light = 12
+    # paige's office = 3
+    # dylan's office = 4
+    # hallway = 5
+    # # change light state
+    requests.put(url() + "/lights/1/state", json={'bri': 50})
+    requests.put(url() + "/lights/12/state", json={'on': False})
+    requests.put(url() + "/groups/1/action", json={'on': False})
+    requests.put(url() + "/groups/3/action", json={'on': False})
+    requests.put(url() + "/groups/4/action", json={'on': False})
+    requests.put(url() + "/groups/5/action", json={'on': False})
 
-        # send data to Hue to change room setting per form
-        requests.put(url() + f"/groups/{room}/action", json={'on': onoff, 'bri': int(intensity)})
-        # redirect to rooms.html to see changes
-        return redirect("./rooms")
-    # if validation failed or new form
-    else:
-        # get errors from submitted form
-        flash(form.errors)
-        # display roomform.html
-        return render_template('./roomform.html', header=headerinfo(), form=form)
+    # send back to lights page
+    return redirect("./lights")
 
 
 @app.route('/api/v1/resources/lightstatus', methods=['GET'])
