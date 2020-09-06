@@ -150,6 +150,9 @@ def morning():
 # routine for darken ship
 @app.route('/dogzebra')
 def dogzebra():
+    
+    updateSunsetTime()
+    
     # living room = 1
     # master bedroom = 2
     # paige's office = 3
