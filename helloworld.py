@@ -2,6 +2,7 @@ import requests
 from flask import Flask, redirect, render_template, flash, request
 from config import Config
 from roomform import RoomForm
+import datetime as dt
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -36,6 +37,29 @@ def getlights():
     # turn lights JSON into a dict for reading
     dicto = r.json()
     return dicto
+
+
+def updateSunsetTime():
+    # Fort Worth Lat/Long
+    lat = "32.75"
+    longi = "-97.3333333"
+    # get timezone and whittle it down to an integer
+    timezoneAddress = "http://worldtimeapi.org/api/timezone/America/Chicago"
+    timezoneResults = requests.get(timezoneAddress).json()
+    timezoneDateTime = dt.datetime.fromisoformat(timezoneResults['datetime'])
+    timezoneInt = int(str(timezoneDateTime.tzinfo).split(':')[0][-3:])
+    # get sunrise/sunset info and apply timezone
+    sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
+    sunriseSet = requests.get(sunRiseSetAddress).json()
+    timezone = dt.timedelta(hours=abs(timezoneInt))
+    # sunriseapi = sunriseSet['results']['sunrise']
+    sunsetapi = sunriseSet['results']['sunset']
+    # sunrise = dt.datetime.fromisoformat(sunriseapi)-timezone
+    sunset = dt.datetime.fromisoformat(sunsetapi)-timezone
+    # apply new sunset time to schedule
+    newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
+    changeOutsideLightOnTime = requests.put(f"http://{hip}/api/{hk}/schedules/2", json=newSunSetTime).json()
+    print(changeOutsideLightOnTime)
 
 
 # home page
