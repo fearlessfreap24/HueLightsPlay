@@ -52,14 +52,19 @@ def updateSunsetTime():
     sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
     sunriseSet = requests.get(sunRiseSetAddress).json()
     timezone = dt.timedelta(hours=abs(timezoneInt))
-    # sunriseapi = sunriseSet['results']['sunrise']
+    sunriseapi = sunriseSet['results']['sunrise']
     sunsetapi = sunriseSet['results']['sunset']
-    # sunrise = dt.datetime.fromisoformat(sunriseapi)-timezone
+    sunrise = dt.datetime.fromisoformat(sunriseapi)-timezone
     sunset = dt.datetime.fromisoformat(sunsetapi)-timezone
+    # calculate difference in sunrise and sunset
+    ssSrDiff = sunrise - sunset
     # apply new sunset time to schedule
     newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
+    offTimeUpdate = {'conditions': [{'address': '/sensors/3/state/flag','operator': 'eq','value': 'true'},{'address': '/sensors/3/state/flag','operator': 'ddx','value': f"PT{str(ssSrDiff).split(',')[1].strip()}"}]}
     changeOutsideLightOnTime = requests.put(f"http://{hip}/api/{hk}/schedules/2", json=newSunSetTime).json()
+    changeOffTime = requests.put(f"http://{hip}/api/{hk}/rules/3", json=offTimeUpdate).json()
     print(changeOutsideLightOnTime)
+    print(changeOffTime)
 
 
 # home page
