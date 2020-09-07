@@ -13,6 +13,12 @@ MWSTARTTIME = dt.time(23, 0, 0)
 MWENDTIME = dt.time(5, 0, 0)
 
 
+def pp(toPrint):
+    print()
+    print(toPrint)
+    print()
+
+
 def isBigMaintWindow():
     mwStart = dt.datetime.combine( dt.datetime.today(), MWSTARTTIME)
     mwEnd = dt.datetime.combine(dt.datetime.today(), MWENDTIME)
@@ -77,10 +83,31 @@ print(f"Fort Worth in maintenance window? {isActualMaintWindow(lat, longi)}")
 
 newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
 # changeOutsideLightOnTime = req.put(f"http://{HUEIP}/api/{HUEKEY}/schedules/2", json=newSunSetTime).json()
+print()
 print(newSunSetTime)
 
 ssSrDiff = sunrise - sunset
-print(f"the difference is {ssSrDiff}")
+print(f"\nthe difference is {str(ssSrDiff).split(',')[1]}")
+
+rule3 = req.get(f"http://{HUEIP}/api/{HUEKEY}/rules/3").json()
+pp(rule3)
+conditions = rule3['conditions']
+pp(conditions)
+
+for i in range(len(conditions)):
+    print(conditions[i], end="\n")
+
+conditions[1]["value"] = f"PT{str(ssSrDiff).split(',')[1].strip()}"
+pp(f"new Time = {conditions[1]}")
+
+pp(f"updated rule:\n{rule3}")
+
+offTimeUpdate = {'conditions': [{'address': '/sensors/3/state/flag','operator': 'eq','value': 'true'},{'address': '/sensors/3/state/flag','operator': 'ddx','value': f"PT{str(ssSrDiff).split(',')[1].strip()}"}]}
+
+pp(offTimeUpdate)
+
+addTime = req.put(f"http://{HUEIP}/api/{HUEKEY}/rules/3", json=offTimeUpdate)
+pp(addTime)
 
 
 
