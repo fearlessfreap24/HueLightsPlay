@@ -76,5 +76,56 @@ print(f"Fort Worth in maintenance window? {isActualMaintWindow(lat, longi)}")
 # •	Weekdays is 01111100 = 124
 
 newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
-changeOutsideLightOnTime = req.put(f"http://{HUEIP}/api/{HUEKEY}/schedules/2", json=newSunSetTime).json()
+# changeOutsideLightOnTime = req.put(f"http://{HUEIP}/api/{HUEKEY}/schedules/2", json=newSunSetTime).json()
 print(newSunSetTime)
+
+ssSrDiff = sunrise - sunset
+print(f"the difference is {ssSrDiff}")
+
+
+
+# {"name":"Routine 2.end",
+# "owner":"bc24e6ca-106c-412d-bbf9-64354ef97219",
+# "created":"2020-09-07T18:05:56",
+# "lasttriggered":"none",
+# "timestriggered":0,
+# "status":"enabled",
+# "recycle":true,
+# "conditions":
+#   [{
+#   "address":"/sensors/3/state/flag",
+#   "operator":"eq",
+#   "value":"true"
+#   },
+#   {
+#   "address":"/sensors/3/state/flag",
+#   "operator":"ddx",
+#   "value":"PT11:15:00"
+#   }],
+# "actions":
+#   [{
+#   "address":"/groups/7/action",
+#   "method":"PUT",
+#   "body":
+#       {
+#       "on":false
+#       }
+#   },
+#   {
+#   "address":"/groups/6/action",
+#   "method":"PUT",
+#   "body":
+#       {
+#       "on":false
+#       }
+#   },
+#   {
+#   "address":"/sensors/3/state",
+#   "method":"PUT",
+#   "body":
+#       {
+#       "flag":false
+#       }
+#   }
+#   ]
+# }
