@@ -156,7 +156,7 @@ def morning():
 @app.route('/dogzebra')
 def dogzebra():
     
-    updateSunsetTime()
+    # updateSunsetTime()
     
     # living room = 1
     # master bedroom = 2
