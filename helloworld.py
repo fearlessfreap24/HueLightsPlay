@@ -39,7 +39,7 @@ def getlights():
     return dicto
 
 
-def updateSunsetTime():
+def getSunRiseSet():
     # Fort Worth Lat/Long
     lat = "32.75"
     longi = "-97.3333333"
@@ -56,15 +56,22 @@ def updateSunsetTime():
     sunsetapi = sunriseSet['results']['sunset']
     sunrise = dt.datetime.fromisoformat(sunriseapi)-timezone
     sunset = dt.datetime.fromisoformat(sunsetapi)-timezone
-    # calculate difference in sunrise and sunset
-    ssSrDiff = sunrise - sunset
+
+    return { "sunrise": sunrise, "sunset": sunset }
+
+
+def updateSunsetTime():
+    
+    ssTimes = getSunRiseSet()
+    sunset = ssTimes["sunset"]
+    sunrise = ssTimes["sunrise"]
     # apply new sunset time to schedule
     newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
-    offTimeUpdate = {'conditions': [{'address': '/sensors/3/state/flag','operator': 'eq','value': 'true'},{'address': '/sensors/3/state/flag','operator': 'ddx','value': f"PT{str(ssSrDiff).split(',')[1].strip()}"}]}
+    newSunRiseTime = {'localtime': f"W127/T{str(sunrise.time())}A00:10:00"}
     changeOutsideLightOnTime = requests.put(f"http://{hip}/api/{hk}/schedules/2", json=newSunSetTime).json()
-    changeOffTime = requests.put(f"http://{hip}/api/{hk}/rules/3", json=offTimeUpdate).json()
+    changeOutsideLightOffTime = requests.put(f"http://{hip}/api/{hk}/schedules/4", json=newSunRiseTime).json()
     print(changeOutsideLightOnTime)
-    print(changeOffTime)
+    print(changeOutsideLightOffTime)
 
 
 # home page
@@ -264,3 +271,26 @@ def lightintens():
     requests.put(url() + f"/lights/{light}/state", json={'bri': int(intens)})
 
     return requests.get(url() + f"/lights/{light}").json()
+
+
+@app.route('/api/v1/resources/sunrisesunset', methods=['GET'])
+def ssStatus():
+    returnDict = {
+        "sunrise": "",
+        "sunset": "",
+        "outsideOn": "",
+        "outsideOff": ""
+    }
+    ssTimes = getSunRiseSet()
+    returnDict["sunrise"] = ssTimes["sunrise"]
+    returnDict["sunset"] = ssTimes["sunset"]
+    # "Turn On Outside"
+    # "Turn Off Outside"
+    schedules = requests.get(f"{url()}/schedules").json()
+    for i in schedules:
+        if schedules[i]["name"] == "Turn On Outside":
+            returnDict["outsideOn"] = schedules[i]["localtime"]
+        elif schedules[i]["name"] == "Turn Off Outside":
+            returnDict["outsideOff"] = schedules[i]["localtime"]
+
+    return returnDict
