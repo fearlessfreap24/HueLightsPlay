@@ -6,8 +6,8 @@ import datetime as dt
 
 # read .env file
 load_dotenv()
-HUEKEY = os.getenv('HUEKEY')
-HUEIP = os.getenv('HUEIP')
+hk = os.getenv('HUEKEY')
+hip = os.getenv('HUEIP')
 IPGEO = os.getenv("IPGEO")
 MWSTARTTIME = dt.time(23, 0, 0)
 MWENDTIME = dt.time(5, 0, 0)
@@ -89,7 +89,7 @@ print(newSunSetTime)
 ssSrDiff = sunrise - sunset
 print(f"\nthe difference is {str(ssSrDiff).split(',')[1]}")
 
-rule3 = req.get(f"http://{HUEIP}/api/{HUEKEY}/rules/3").json()
+rule3 = req.get(f"http://{hip}/api/{hk}/rules/3").json()
 pp(rule3)
 conditions = rule3['conditions']
 pp(conditions)
@@ -106,53 +106,14 @@ offTimeUpdate = {'conditions': [{'address': '/sensors/3/state/flag','operator': 
 
 pp(offTimeUpdate)
 
-addTime = req.put(f"http://{HUEIP}/api/{HUEKEY}/rules/3", json=offTimeUpdate)
+addTime = req.put(f"http://{hip}/api/{hk}/rules/3", json=offTimeUpdate)
 pp(addTime)
 
-
-
-# {"name":"Routine 2.end",
-# "owner":"bc24e6ca-106c-412d-bbf9-64354ef97219",
-# "created":"2020-09-07T18:05:56",
-# "lasttriggered":"none",
-# "timestriggered":0,
-# "status":"enabled",
-# "recycle":true,
-# "conditions":
-#   [{
-#   "address":"/sensors/3/state/flag",
-#   "operator":"eq",
-#   "value":"true"
-#   },
-#   {
-#   "address":"/sensors/3/state/flag",
-#   "operator":"ddx",
-#   "value":"PT11:15:00"
-#   }],
-# "actions":
-#   [{
-#   "address":"/groups/7/action",
-#   "method":"PUT",
-#   "body":
-#       {
-#       "on":false
-#       }
-#   },
-#   {
-#   "address":"/groups/6/action",
-#   "method":"PUT",
-#   "body":
-#       {
-#       "on":false
-#       }
-#   },
-#   {
-#   "address":"/sensors/3/state",
-#   "method":"PUT",
-#   "body":
-#       {
-#       "flag":false
-#       }
-#   }
-#   ]
-# }
+turnLightsOn = {
+                "name": "outside lights on",
+                "description": "turn on outside lights at sunset",
+                "command": {
+                    "address": f"api/{hk}/sensors/3/state",
+                    
+                }
+}
