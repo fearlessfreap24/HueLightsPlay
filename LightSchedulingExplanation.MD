@@ -36,8 +36,8 @@ Rule for off<br>
 <p>What I found was that DX means the sensor transistioned. So the on rule means "sensor 3 transitions and the flag is equal to True".</p>
 <p>DDX means the amount of time after transition. "11 hours and 15 minutes +/- 15 minutes after sensor 3 transitions to true".</p>
 <p>I deleted the schedule in the iOS app and started from scratch. First thing to do was create a [Generic State Sensor](https://developers.meethue.com/develop/application-design-guidance/how-to-use-ip-sensors/)</p>
-<p>Then two schedules were [created](https://developers.meethue.com/develop/hue-api/3-schedules-api/#create-schedule).</p>
-<code>{
+<p>Then two schedules were <a href="https://developers.meethue.com/develop/hue-api/3-schedules-api/#create-schedule">created.</a></p>
+<p>SChedule for On:<br><code>{
     "name": "Turn on Outside",
     "command": {
         "address": "/api/<username>/sensors/7/state/",
@@ -48,6 +48,7 @@ Rule for off<br>
     },
     "localtime": "W127T19:45:40A10:00"
     }</code><br>
+    Schedule for Off:<br>
     <code>{
     "name": "Turn off Outside",
     "command": {
@@ -58,4 +59,7 @@ Rule for off<br>
         }
     },
     "localtime": "W127T07:11:40A10:00"
-        }</code>
+        }</code></p>
+<p>The idea here is that eh sensor will be used as a light switch. at 7:45PM and 40 seconds +/- 10 minutes the switch will be turned on (set to true).
+    Then, at 07:11AM and 40 seconds +/- 10 minutes the switch will get turned off (set to false).</p>
+
