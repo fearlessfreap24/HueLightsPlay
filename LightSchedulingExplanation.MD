@@ -3,34 +3,34 @@ A little explanation on how the schduling worked.
 <p>I had made a schedule with the iOS app that was controlling the on/off time. At first, 
 I started to try to manipulate the rules that the app created, but the off time never worked.</p>
 
-here is a snippet from the rules:
+here is a snippet from the rules:<br>
 Rule for on<br>
-    <code>{'conditions': <br>
-        [<br>
-            {<br>
-                'address': '/sensors/3/state/flag',<br>
-                'operator': 'eq','value': 'true'<br>
-            },<br>
-            {<br>
-                'address': '/sensors/3/state/flag',<br>
-                'operator': 'dx'<br>
-            }<br>
-        ]<br>
+    <code>{'conditions': 
+        [
+            {
+                'address': '/sensors/3/state/flag',
+                'operator': 'eq','value': 'true'
+            },
+            {
+                'address': '/sensors/3/state/flag',
+                'operator': 'dx'
+            }
+        ]
     }</code>
 
 Rule for off<br>
-    <code>{'conditions': <br>
-        [<br>
-            {<br>
-                'address': '/sensors/3/state/flag',<br>
-                'operator': 'eq','value': 'true'<br>
-            },<br>
-            {<br>
-                'address': '/sensors/3/state/flag',<br>
-                'operator': 'ddx',<br>
-                'value': 'PT11:15:00A15:00'<br>
-            }<br>
-        ]<br>
+    <code>{'conditions': 
+        [
+            {
+                'address': '/sensors/3/state/flag',
+                'operator': 'eq','value': 'true'
+            },
+            {
+                'address': '/sensors/3/state/flag',
+                'operator': 'ddx',
+                'value': 'PT11:15:00A15:00'
+            }
+        ]
     }</code>
 
 <p>What I found was that DX means the sensor transistioned. So the on rule means "sensor 3 transitions and the flag is equal to True".</p>
