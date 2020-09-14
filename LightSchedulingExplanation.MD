@@ -4,8 +4,8 @@ A little explanation on how the schduling worked.
 I started to try to manipulate the rules that the app created, but the off time never worked.</p>
 
 here is a snippet from the rules:
-Rule for on
-    {'conditions': 
+Rule for on<br>
+    <code>{'conditions': 
         [
             {
                 'address': '/sensors/3/state/flag',
@@ -16,10 +16,10 @@ Rule for on
                 'operator': 'dx'
             }
         ]
-    }
+    }</code>
 
-Rule for off
-    {'conditions': 
+Rule for off<br>
+    <code>{'conditions': 
         [
             {
                 'address': '/sensors/3/state/flag',
@@ -31,7 +31,7 @@ Rule for off
                 'value': 'PT11:15:00A15:00'
             }
         ]
-    }
+    }</code>
 
 <p>What I found was that DX means the sensor transistioned. So the on rule means "sensor 3 transitions and the flag is equal to True".</p>
 <p>DDX means the amount of time after transition. "11 hours and 15 minutes +/- 15 minutes after sensor 3 transitions to true".</p>
