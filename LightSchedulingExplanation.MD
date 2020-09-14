@@ -5,33 +5,34 @@ I started to try to manipulate the rules that the app created, but the off time 
 
 here is a snippet from the rules:
 Rule for on<br>
-    <code>{'conditions': 
-        [
-            {
-                'address': '/sensors/3/state/flag',
-                'operator': 'eq','value': 'true'
-            },
-            {
-                'address': '/sensors/3/state/flag',
-                'operator': 'dx'
-            }
-        ]
+    <code>{'conditions': <br>
+        [<br>
+            {<br>
+                'address': '/sensors/3/state/flag',<br>
+                'operator': 'eq','value': 'true'<br>
+            },<br>
+            {<br>
+                'address': '/sensors/3/state/flag',<br>
+                'operator': 'dx'<br>
+            }<br>
+        ]<br>
     }</code>
 
 Rule for off<br>
-    <code>{'conditions': 
-        [
-            {
-                'address': '/sensors/3/state/flag',
-                'operator': 'eq','value': 'true'
-            },
-            {
-                'address': '/sensors/3/state/flag',
-                'operator': 'ddx',
-                'value': 'PT11:15:00A15:00'
-            }
-        ]
+    <code>{'conditions': <br>
+        [<br>
+            {<br>
+                'address': '/sensors/3/state/flag',<br>
+                'operator': 'eq','value': 'true'<br>
+            },<br>
+            {<br>
+                'address': '/sensors/3/state/flag',<br>
+                'operator': 'ddx',<br>
+                'value': 'PT11:15:00A15:00'<br>
+            }<br>
+        ]<br>
     }</code>
 
 <p>What I found was that DX means the sensor transistioned. So the on rule means "sensor 3 transitions and the flag is equal to True".</p>
 <p>DDX means the amount of time after transition. "11 hours and 15 minutes +/- 15 minutes after sensor 3 transitions to true".</p>
+<p>I deleted the schedule in the iOS app and started from scratch. First thing to do was create a *[Generic State Sensor](https://developers.meethue.com/develop/application-design-guidance/how-to-use-ip-sensors/)*</p>
