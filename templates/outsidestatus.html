@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Outside Staus{% endblock %}
+{% block content %}
+
+<p>Sunrise - {{ dict["sunrise"] }}</p>
+<p>Sunset - {{ dict["sunset"] }}</p>
+<p>Outside Off - {{ dict["outsideOff"] }}</p>
+<p>Outside On - {{ dict["outsideOn"] }}</p>
+<p>Sensor Status - {{ dict["sensorStatus"] }}</p>
+<p>Last sensor state change - {{ dict["sensorLastUpdate"] }}</p>
+{% endblock %}
