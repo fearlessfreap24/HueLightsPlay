@@ -39,15 +39,22 @@ def getlights():
     return dicto
 
 
-def getSunRiseSet():
-    # Fort Worth Lat/Long
-    lat = "32.75"
-    longi = "-97.3333333"
+def getTimeZone():
     # get timezone and whittle it down to an integer
     timezoneAddress = "http://worldtimeapi.org/api/timezone/America/Chicago"
     timezoneResults = requests.get(timezoneAddress).json()
     timezoneDateTime = dt.datetime.fromisoformat(timezoneResults['datetime'])
     timezoneInt = int(str(timezoneDateTime.tzinfo).split(':')[0][-3:])
+
+    return timezoneInt
+
+
+def getSunRiseSet():
+    
+    # Fort Worth Lat/Long
+    lat = "32.75"
+    longi = "-97.3333333"
+    timezoneInt = getTimeZone()
     # get sunrise/sunset info and apply timezone
     sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
     sunriseSet = requests.get(sunRiseSetAddress).json()
@@ -279,7 +286,9 @@ def ssStatus():
         "sunrise": "",
         "sunset": "",
         "outsideOn": "",
-        "outsideOff": ""
+        "outsideOff": "",
+        "sensorStatus": "",
+        "sensorLastUpdate": ""
     }
     ssTimes = getSunRiseSet()
     returnDict["sunrise"] = ssTimes["sunrise"]
@@ -293,4 +302,18 @@ def ssStatus():
         elif schedules[i]["name"] == "Turn Off Outside":
             returnDict["outsideOff"] = schedules[i]["localtime"]
 
+    sensor7 = requests.get(f"{url()}/sensors/7").json()
+    returnDict["sensorStatus"] = str(sensor7["state"]["flag"])
+    timezoneInt = getTimeZone()
+    timezone = dt.timedelta(hours=abs(timezoneInt))
+    sensorDateTime = dt.datetime.fromisoformat(sensor7["state"]["lastupdated"])
+    sensorDateTimeWithTz = sensorDateTime-timezone
+    returnDict["sensorLastUpdate"] = sensorDateTimeWithTz
+
     return returnDict
+
+
+@app.route('/OutsideStatus')
+def outsideStatus():
+    info = ssStatus()
+    return render_template("./outsidestatus.html", header=headerinfo(), dict=info)
