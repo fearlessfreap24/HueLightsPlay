@@ -37,7 +37,7 @@ Rule for off<br>
 <p>Manipulating the schedule for the lights to turn on was working great. However, manipulating the rule to turn the lights off was not working.</p>
 <p>I deleted the schedule in the iOS app and started from scratch. First thing to do was create a <a href="https://developers.meethue.com/develop/application-design-guidance/how-to-use-ip-sensors/">Generic State Sensor.</a></p>
 <p>Then two schedules were <a href="https://developers.meethue.com/develop/hue-api/3-schedules-api/#create-schedule">created.</a></p>
-<p>SChedule for On:<br><code>{
+<p>Schedule for On:<br><code>{
     "name": "Turn on Outside",
     "command": {
         "address": "/api/<username>/sensors/7/state/",
@@ -60,6 +60,7 @@ Rule for off<br>
     },
     "localtime": "W127T07:11:40A10:00"
         }</code></p>
+<p>W127 is a bit mask for the days of the week. 0MTWRFSS = 01111111 = 127. Example, Moday only would be 01000000 = 64 and Saturday and Sunday would be 00000011 = 3</p>
 <p>The idea here is that the sensor will be used as a light switch. at 7:45PM and 40 seconds +/- 10 minutes the switch will be turned on (set to true).
     Then, at 07:11AM and 40 seconds +/- 10 minutes the switch will get turned off (set to false).</p>
 <p>Sensors trigger rules. Two rules were <a href="https://developers.meethue.com/develop/hue-api/6-rules-api/#create-rule">created.</a></p>
