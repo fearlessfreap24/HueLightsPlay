@@ -1,7 +1,7 @@
 import requests
 from flask import Flask, redirect, render_template, flash, request
 from config import Config
-from roomform import RoomForm
+# from roomform import RoomForm
 import datetime as dt
 
 app = Flask(__name__)
@@ -42,11 +42,17 @@ def getlights():
 def getTimeZone():
     # get timezone and whittle it down to an integer
     timezoneAddress = "http://worldtimeapi.org/api/timezone/America/Chicago"
-    timezoneResults = requests.get(timezoneAddress).json()
-    timezoneDateTime = dt.datetime.fromisoformat(timezoneResults['datetime'])
-    timezoneInt = int(str(timezoneDateTime.tzinfo).split(':')[0][-3:])
+    # timezoneAddress = "http://worldtimeapi.org/api/timezone/America/Chicago"
+    timezoneCall = requests.get(timezoneAddress)
+    goodTimeZone = timezoneCall.status_code == 200
+    if goodTimeZone:
+        timezoneResults = timezoneCall.json()
+        timezoneDateTime = dt.datetime.fromisoformat(timezoneResults['datetime'])
+        timezoneInt = int(str(timezoneDateTime.tzinfo).split(':')[0][-3:])
 
-    return timezoneInt
+        return { 'isSuccess': goodTimeZone, 'tz': timezoneInt }
+    else:
+        return { 'isSuccess': goodTimeZone }
 
 
 def getSunRiseSet():
@@ -54,31 +60,41 @@ def getSunRiseSet():
     # Fort Worth Lat/Long
     lat = "32.75"
     longi = "-97.3333333"
-    timezoneInt = getTimeZone()
+    timezone = getTimeZone()
+    if timezone['isSuccess']:
+        timezoneInt = timezone['tz']
     # get sunrise/sunset info and apply timezone
     sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
-    sunriseSet = requests.get(sunRiseSetAddress).json()
-    timezone = dt.timedelta(hours=abs(timezoneInt))
-    sunriseapi = sunriseSet['results']['sunrise']
-    sunsetapi = sunriseSet['results']['sunset']
-    sunrise = dt.datetime.fromisoformat(sunriseapi)-timezone
-    sunset = dt.datetime.fromisoformat(sunsetapi)-timezone
-
-    return { "sunrise": sunrise, "sunset": sunset }
+    # sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
+    sunriseSetCall = requests.get(sunRiseSetAddress)
+    goodApiCall = sunriseSetCall.status_code == 200
+    sunriseSet = sunriseSetCall.json()
+    if goodApiCall and timezone['isSuccess']:
+        timezone = dt.timedelta(hours=abs(timezoneInt))
+        sunriseapi = sunriseSet['results']['sunrise']
+        sunsetapi = sunriseSet['results']['sunset']
+        sunrise = dt.datetime.fromisoformat(sunriseapi)-timezone
+        sunset = dt.datetime.fromisoformat(sunsetapi)-timezone
+        return { 'isSuccess': goodApiCall, "sunrise": sunrise, "sunset": sunset }
+    else:
+        return {'isSuccess': goodApiCall and timezone['isSuccess'] }
 
 
 def updateSunsetTime():
     
     ssTimes = getSunRiseSet()
-    sunset = ssTimes["sunset"]
-    sunrise = ssTimes["sunrise"]
-    # apply new sunset time to schedule
-    newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
-    newSunRiseTime = {'localtime': f"W127/T{str(sunrise.time())}A00:10:00"}
-    changeOutsideLightOnTime = requests.put(f"http://{hip}/api/{hk}/schedules/2", json=newSunSetTime).json()
-    changeOutsideLightOffTime = requests.put(f"http://{hip}/api/{hk}/schedules/4", json=newSunRiseTime).json()
-    print(changeOutsideLightOnTime)
-    print(changeOutsideLightOffTime)
+    if ssTimes['isSuccess']:
+        sunset = ssTimes["sunset"]
+        sunrise = ssTimes["sunrise"]
+        # apply new sunset time to schedule
+        newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
+        newSunRiseTime = {'localtime': f"W127/T{str(sunrise.time())}A00:10:00"}
+        changeOutsideLightOnTime = requests.put(f"http://{hip}/api/{hk}/schedules/2", json=newSunSetTime).json()
+        changeOutsideLightOffTime = requests.put(f"http://{hip}/api/{hk}/schedules/4", json=newSunRiseTime).json()
+        print(changeOutsideLightOnTime)
+        print(changeOutsideLightOffTime)
+    else:
+        print("There was an error getting sunrise/sunset times")
 
 
 # home page
@@ -291,8 +307,12 @@ def ssStatus():
         "sensorLastUpdate": ""
     }
     ssTimes = getSunRiseSet()
-    returnDict["sunrise"] = ssTimes["sunrise"]
-    returnDict["sunset"] = ssTimes["sunset"]
+    if ssTimes['isSuccess']:
+        returnDict["sunrise"] = ssTimes["sunrise"]
+        returnDict["sunset"] = ssTimes["sunset"]
+    else:
+        returnDict["sunrise"] = "Unable to get time"
+        returnDict["sunset"] = "Unable to get time"
     # "Turn On Outside"
     # "Turn Off Outside"
     schedules = requests.get(f"{url()}/schedules").json()
@@ -305,7 +325,10 @@ def ssStatus():
     sensor7 = requests.get(f"{url()}/sensors/7").json()
     returnDict["sensorStatus"] = str(sensor7["state"]["flag"])
     timezoneInt = getTimeZone()
-    timezone = dt.timedelta(hours=abs(timezoneInt))
+    if timezoneInt['isSuccess']:
+        timezone = dt.timedelta(hours=abs(timezoneInt))
+    else:
+        timezone = dt.timedelta(hours=6)
     sensorDateTime = dt.datetime.fromisoformat(sensor7["state"]["lastupdated"])
     sensorDateTimeWithTz = sensorDateTime-timezone
     returnDict["sensorLastUpdate"] = sensorDateTimeWithTz
