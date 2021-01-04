@@ -326,7 +326,7 @@ def ssStatus():
     returnDict["sensorStatus"] = str(sensor7["state"]["flag"])
     timezoneInt = getTimeZone()
     if timezoneInt['isSuccess']:
-        timezone = dt.timedelta(hours=abs(timezoneInt))
+        timezone = dt.timedelta(hours=abs(timezoneInt['tz']))
     else:
         timezone = dt.timedelta(hours=6)
     sensorDateTime = dt.datetime.fromisoformat(sensor7["state"]["lastupdated"])
