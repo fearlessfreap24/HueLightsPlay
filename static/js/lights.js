@@ -22,7 +22,7 @@
 
 const lightstatus = (light) => {
     let xhttp = new XMLHttpRequest;
-    xhttp.open('GET', '/api/v1/resources/lightstatus?light=' + light, true)
+    xhttp.open('GET', '/api/lightstatus?light=' + light, true)
     xhttp.send();
     xhttp.onload = function () {
         if (this.status === 200){
@@ -34,7 +34,7 @@ const lightstatus = (light) => {
 
 const lightonoff = (light, onoff) => {
     let xhttp = new XMLHttpRequest;
-    xhttp.open('GET', '/api/v1/resources/lightonoff?light=' + light + "&onoff=" + onoff, true)
+    xhttp.open('GET', '/api/lightonoff?light=' + light + "&onoff=" + onoff, true)
     xhttp.send();
     xhttp.onload = function () {
         if (this.status === 200){
@@ -57,7 +57,7 @@ const output = (id) => {
 
 const lightchange = (light, intens) => {
     let xhttp = new XMLHttpRequest;
-    xhttp.open('GET', '/api/v1/resources/lightintens?light=' + light + "&intens=" + intens, true)
+    xhttp.open('GET', '/api/lightintens?light=' + light + "&intens=" + intens, true)
     xhttp.send();
     xhttp.onload = function () {
         if (this.status === 200){
