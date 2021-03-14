@@ -41,7 +41,6 @@ def getSunRiseSet():
         timezoneInt = timezone['tz']
     # get sunrise/sunset info and apply timezone
     sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
-    # sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
     sunriseSetCall = requests.get(sunRiseSetAddress)
     goodApiCall = sunriseSetCall.status_code == 200
     sunriseSet = sunriseSetCall.json()
@@ -345,7 +344,8 @@ def outsideStatus():
 
 
 if __name__ == "__main__":
-    # Testing
-    app.run(debug=True)
-    # Production
+    # # Testing
+    # app.run(debug=True)
+    # # Production
     app.run(host="0.0.0.0")
+    # updateSunsetTime()
