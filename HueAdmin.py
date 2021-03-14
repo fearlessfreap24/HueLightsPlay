@@ -190,6 +190,13 @@ def change_light_state(light: int, state: dict):
     return update_light.status_code < 400
 
 
+def update_schedule(number: int, update: dict):
+    schedule_call = f"schedules/{number}"
+    update_schedule = req.put(HUEADDRESS + schedule_call, json=update)
+
+    return update_schedule.status_code < 400
+
+
 if __name__ == "__main__":
     # print(f"{add_light_to_group(16, 4)}")
     # print(f"{remove_light_from_group(5, 4)}")
