@@ -3,6 +3,8 @@ from flask import Flask, redirect, render_template, flash, request
 from config import Config
 import HueAdmin as HA
 import datetime as dt
+import json
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -65,8 +67,8 @@ def updateSunsetTime():
         # apply new sunset time to schedule
         newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
         newSunRiseTime = {'localtime': f"W127/T{str(sunrise.time())}A00:10:00"}
-        changeOutsideLightOnTime = requests.put(f"http://{hip}/api/{hk}/schedules/2", json=newSunSetTime).json()
-        changeOutsideLightOffTime = requests.put(f"http://{hip}/api/{hk}/schedules/4", json=newSunRiseTime).json()
+        changeOutsideLightOnTime = HA.update_schedule(2, newSunSetTime)
+        changeOutsideLightOffTime = HA.update_schedule(4, newSunRiseTime)
         print(changeOutsideLightOnTime)
         print(changeOutsideLightOffTime)
     else:
@@ -349,3 +351,4 @@ if __name__ == "__main__":
     # app.run(debug=True)
     # Production
     app.run(host="0.0.0.0")
+    # print(ssStatus())
