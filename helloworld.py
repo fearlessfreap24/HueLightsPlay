@@ -65,8 +65,8 @@ def updateSunsetTime():
         # apply new sunset time to schedule
         newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
         newSunRiseTime = {'localtime': f"W127/T{str(sunrise.time())}A00:10:00"}
-        changeOutsideLightOnTime = requests.put(f"http://{hip}/api/{hk}/schedules/2", json=newSunSetTime).json()
-        changeOutsideLightOffTime = requests.put(f"http://{hip}/api/{hk}/schedules/4", json=newSunRiseTime).json()
+        changeOutsideLightOnTime = HA.update_schedule(2, newSunSetTime)
+        changeOutsideLightOffTime = HA.update_schedule(4, newSunRiseTime)
         print(changeOutsideLightOnTime)
         print(changeOutsideLightOffTime)
     else:
