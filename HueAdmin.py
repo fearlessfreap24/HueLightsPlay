@@ -67,8 +67,8 @@ def get_sensors(number=0):
 
 
 def get_new_lights():
-    if not scan_for_new_lights():
-        return
+    # if not scan_for_new_lights():
+    #     return
     get_new_lights = req.get(HUEADDRESS + "lights/new")
     if get_new_lights.status_code >= 400:
         return
@@ -78,11 +78,10 @@ def get_new_lights():
 
 def add_light_to_group(light: int, group: int):
     light_group = f"groups/{group}"
-    get_group_info = get_groups()
+    get_group_info = get_groups(group)
     if not get_group_info:
         return
-    group_lights = get_group_info.json()['lights']
-    print(group_lights)
+    group_lights = get_group_info['lights']
     group_lights.append(str(light))
     send_group_update = req.put(HUEADDRESS + light_group, json={'lights': group_lights})
     
@@ -91,10 +90,10 @@ def add_light_to_group(light: int, group: int):
 
 def remove_light_from_group(light: int, group: int):
     light_group = f"groups/{group}"
-    get_group_info = get_groups()
+    get_group_info = get_groups(group)
     if not get_group_info:
         return
-    group_lights = get_group_info.json()['lights']
+    group_lights = get_group_info['lights']
     if str(light) not in group_lights:
         return
     
@@ -198,19 +197,21 @@ def update_schedule(number: int, update: dict):
 
 
 if __name__ == "__main__":
-    # print(f"{add_light_to_group(16, 4)}")
-    # print(f"{remove_light_from_group(5, 4)}")
+    # print(f"{add_light_to_group(17, 6)}")
+    # print(f"{remove_light_from_group(9, 6)}")
+    # scan_for_new_lights()
     # print(json.dumps(get_new_lights(), indent=2))
     # print(json.dumps(get_light_info(16), indent=2))
     # new_light_info = { 'name': "Purple Lamp" }
     # print(f"{edit_light(16, new_light_info)}")
-    # print_groups(5)
-    print_lights()
+    # print_groups()
+    # print_lights()
     # print(json.dumps(get_schedules(2), indent=2))
-    light1_name = {'name': "Paige Bedside"}
-    light12_name = {'name': "Dylan Bedside"}
-    edit_light(1, light1_name)
-    edit_light(12, light12_name)
+    # light1_name = {'name': "Paige Bedside"}
+    # light12_name = {'name': "Dylan Bedside"}
+    # light17_name = {'name': "FRONT Porch"}
+    # edit_light(17, light17_name)
+    # edit_light(12, light12_name)
     print_lights()
     # print(json.dumps(get_rules(2), indent=2))
     # rule2 = get_rules(2)
@@ -236,3 +237,4 @@ if __name__ == "__main__":
     # print_sensors()
     # print(f"{change_group_state(4, {'on': False})}")
     # print(f"{change_light_state(16, {'on': False})}")
+    # print(json.dumps(get_groups(9), indent=2))
