@@ -3,20 +3,24 @@ from os import getenv
 import requests as req
 import json
 
-from requests.api import get
-
 load_dotenv()
 HK = getenv('HUEKEY')
 HIP = getenv('HUEIP')
 HUEADDRESS = f"http://{HIP}/api/{HK}/"
 
 
-def get_lights(light=0):
-    lights_call = "lights"
-    if light:
-        lights_call += f"/{light}"
+def lights_call(number=0, new=False):
+    if number:
+        return f"lights/{number}"
+    elif new:
+        return f"lights/new"
+    else:
+        return "lights"
 
-    get_lights = req.get(HUEADDRESS + lights_call)
+
+def get_lights(light=0):
+
+    get_lights = req.get(HUEADDRESS + lights_call(light))
     if get_lights.status_code >= 400:
         return
     return get_lights.json()
@@ -67,8 +71,7 @@ def get_sensors(number=0):
 
 
 def get_new_lights():
-    # if not scan_for_new_lights():
-    #     return
+
     get_new_lights = req.get(HUEADDRESS + "lights/new")
     if get_new_lights.status_code >= 400:
         return
@@ -107,14 +110,13 @@ def remove_light_from_group(light: int, group: int):
 
 def scan_for_new_lights():
     scan_call = "lights"
-    scan = req.post(HUEADDRESS + scan_call)
+    scan = req.post(HUEADDRESS + lights_call())
 
-    return scan.status_code < 400
+    return scan.json()
 
 
 def edit_light(light: int, attribs: dict):
-    light_call = f"lights/{light}"
-    send_edits = req.put(HUEADDRESS + light_call, json=attribs)
+    send_edits = req.put(HUEADDRESS + lights_call(light), json=attribs)
 
     return send_edits.status_code < 400
 
@@ -130,7 +132,7 @@ def print_groups(number=0):
         if not groups:
             return
         for item in groups:
-            print(f"{item}, {groups[item]['name']}, {groups[item]['lights']}")
+            print(f"{item}, {groups[item]['name']}, type = {groups[item]['type']}, {groups[item]['lights']}")
 
 
 def print_lights(light=0):
@@ -165,6 +167,13 @@ def print_sensors(number=0):
             if 'flag' in sensors[item]['state']:
                 print_statement += f", state = {sensors[item]['state']['flag']}"
             print(print_statement)
+
+
+def print_rules(number=0):
+    if number:
+        print(json.dumps(get_rules(number), indent=2))
+    else:
+        print(json.dumps(get_rules(), indent=2))
         
 
 def toggle_sensor7():
@@ -196,45 +205,24 @@ def update_schedule(number: int, update: dict):
     return update_schedule.status_code < 400
 
 
+def create_group(attribs: dict):
+    group_call = "groups"
+
+    create_group = req.post(HUEADDRESS + group_call, json=attribs)
+    if create_group.status_code >= 400:
+        return
+    return create_group.json()
+
+
+def update_rule(number: int, attribs: dict):
+    rules_call = f"rules/{number}"
+
+    update_rule = req.put(HUEADDRESS + rules_call, json=attribs)
+    if update_rule.status_code >= 400:
+        return
+    else:
+        print(json.dumps(update_rule.json(), indent=2))
+
+
 if __name__ == "__main__":
-    # print(f"{add_light_to_group(17, 6)}")
-    # print(f"{remove_light_from_group(9, 6)}")
-    # scan_for_new_lights()
-    # print(json.dumps(get_new_lights(), indent=2))
-    # print(json.dumps(get_light_info(16), indent=2))
-    # new_light_info = { 'name': "Purple Lamp" }
-    # print(f"{edit_light(16, new_light_info)}")
-    # print_groups()
-    # print_lights()
-    # print(json.dumps(get_schedules(2), indent=2))
-    # light1_name = {'name': "Paige Bedside"}
-    # light12_name = {'name': "Dylan Bedside"}
-    # light17_name = {'name': "FRONT Porch"}
-    # edit_light(17, light17_name)
-    # edit_light(12, light12_name)
-    print_lights()
-    # print(json.dumps(get_rules(2), indent=2))
-    # rule2 = get_rules(2)
-    # rule2_actions = rule2['actions']
-    # index = None
-    # for i in range(len(rule2_actions)):
-    #     if "groups/5" in rule2_actions[i]['address']:
-    #         del rule2_actions[i]
-
-    # add_group4 = { 'address': "/groups/4/action",
-    #                 'method': "PUT",
-    #                 'body': {
-    #                     'on': True
-    #                 }
-    #             }
-
-    # rule2_actions.append(add_group4)
-
-    # update_rule2 = req.put(HUEADDRESS + "rules/2", json={'actions': rule2_actions})
-    # print(json.dumps(update_rule2.json(), indent=2))
-
-    # toggle_sensor7()
-    # print_sensors()
-    # print(f"{change_group_state(4, {'on': False})}")
-    # print(f"{change_light_state(16, {'on': False})}")
-    # print(json.dumps(get_groups(9), indent=2))
+    print(json.dumps(get_new_lights(), indent=2))
