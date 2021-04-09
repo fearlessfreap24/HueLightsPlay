@@ -1,42 +1,20 @@
 import requests
 from flask import Flask, redirect, render_template, flash, request
 from config import Config
-# from roomform import RoomForm
+import HueAdmin as HA
 import datetime as dt
+import json
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# read HUEKEY environmental variable
-hk = app.config["HUEKEY"]
-hip = app.config["HUEIP"]
-
-
-# routine to create base url
-def url():
-    return str("http://" + hip + "/api/" + hk)
+BAD_INPUT = {'badInput': True}
 
 
 # a dict to pass info for nav bar to jinja
 def headerinfo():
     return {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/rooms"}
-
-
-# method to retrieve room names
-def getrooms():
-    # http request for rooms
-    r = requests.get(url() + "/groups")
-    # turn lights JSON into a dict for reading
-    dicto = r.json()
-    return dicto
-
-
-def getlights():
-    # getting lights data
-    r = requests.get(url() + "/lights")
-    # turn lights JSON into a dict for reading
-    dicto = r.json()
-    return dicto
 
 
 def getTimeZone():
@@ -89,8 +67,8 @@ def updateSunsetTime():
         # apply new sunset time to schedule
         newSunSetTime = {'localtime': f"W127/T{str(sunset.time())}A00:10:00"}
         newSunRiseTime = {'localtime': f"W127/T{str(sunrise.time())}A00:10:00"}
-        changeOutsideLightOnTime = requests.put(f"http://{hip}/api/{hk}/schedules/2", json=newSunSetTime).json()
-        changeOutsideLightOffTime = requests.put(f"http://{hip}/api/{hk}/schedules/4", json=newSunRiseTime).json()
+        changeOutsideLightOnTime = HA.update_schedule(2, newSunSetTime)
+        changeOutsideLightOffTime = HA.update_schedule(4, newSunRiseTime)
         print(changeOutsideLightOnTime)
         print(changeOutsideLightOffTime)
     else:
@@ -103,17 +81,17 @@ def index():
     return render_template("index.html", header=headerinfo(), active="Home")
 
 
-# test page
-@app.route('/hello/')
-def hello():
-    return 'Hello World'
+# # test page
+# @app.route('/hello/')
+# def hello():
+#     return 'Hello World'
 
 
 # display lights and light status
 @app.route('/lights')
 def lights():
     # get lights information
-    dicto = getlights()
+    dicto = HA.get_lights()
 
     # render the template and pass dict to template
     return render_template('lights.html', dict=dicto, header=headerinfo(), active="Lights")
@@ -122,28 +100,26 @@ def lights():
 # function for dylan light on/off
 @app.route('/dylan')
 def dylan():
-    # request info for light 5
-    light5 = requests.get(url() + "/lights/5/")
-
-    # create dict for reading
-    control5 = light5.json()
+    # request info for group 4
+    group4 = HA.get_groups(4)
 
     # remember the current state of the light
-    currStatus = control5['state']['on']
+    currStatus = group4['action']['on']
 
     # change light state to the opposite of the current state
-    requests.put(url() + "/lights/5/state", json={'on': not currStatus})
+    change_state = HA.change_group_state(4, {'on': not currStatus})
 
-    # return to the lights.html page
-    return redirect("./lights")
+    if change_state:
+        return redirect("./lights")
+    return special()
 
 
 # function to turn off leopard lamp and dylan light
 @app.route('/leopard')
 def leopard():
     # change light state to off
-    requests.put(url() + "/lights/5/state", json={'on': False})
-    requests.put(url() + "/lights/3/state", json={'on': False})
+    HA.change_group_state(4, {'on': False})
+    HA.change_light_state(3, {'on': False})
 
     # return to the lights.html page
     return redirect("./lights")
@@ -160,7 +136,7 @@ def special():
 @app.route('/rooms')
 def rooms():
     # get room information
-    groups = getrooms()
+    groups = HA.get_groups()
 
     # render rooms.html and pass header and room info to page
     return render_template("./rooms.html", header=headerinfo(), dict=groups, active="Rooms")
@@ -170,13 +146,13 @@ def rooms():
 @app.route('/morning')
 def morning():
     # turn on bedroom lights at full brightness
-    requests.put(url() + "/groups/2/action", json={'on': True, 'bri': 254})
+    HA.change_group_state(2, {'on': True, 'bri': 254})
 
     # turn on living room light at full brightness
-    requests.put(url() + "/groups/1/action", json={'on': True, 'bri': 254})
+    HA.change_group_state(1, {'on': True, 'bri': 254})
 
     # turn on hall lights at half brightness
-    requests.put(url() + "/groups/5/action", json={'on': True, 'bri': 127})
+    HA.change_group_state(5, {'on': True, 'bri': 127})
 
     # send back to lights page
     return redirect("./lights")
@@ -193,11 +169,11 @@ def dogzebra():
     # paige's office = 3
     # dylan's office = 4
     # hallway = 5
-    requests.put(url() + "/groups/1/action", json={'on': False})
-    requests.put(url() + "/groups/2/action", json={'on': False})
-    requests.put(url() + "/groups/3/action", json={'on': False})
-    requests.put(url() + "/groups/4/action", json={'on': False})
-    requests.put(url() + "/groups/5/action", json={'on': False})
+    HA.change_group_state(1, {'on': False})
+    HA.change_group_state(3, {'on': False})
+    HA.change_group_state(2, {'on': False})
+    HA.change_group_state(4, {'on': False})
+    HA.change_group_state(5, {'on': False})
 
     # send back to lights page
     return redirect("./lights")
@@ -211,92 +187,120 @@ def prebed():
     # dylan's office = 4
     # hallway = 5
     # # change light state
-    requests.put(url() + "/lights/1/state", json={'bri': 50})
-    requests.put(url() + "/lights/12/state", json={'on': False})
-    requests.put(url() + "/groups/1/action", json={'on': False})
-    requests.put(url() + "/groups/3/action", json={'on': False})
-    requests.put(url() + "/groups/4/action", json={'on': False})
-    requests.put(url() + "/groups/5/action", json={'on': False})
+    HA.change_light_state(12, {'bri': 50})
+    HA.change_light_state(1, {'on': False})
+    HA.change_group_state(1, {'on': False})
+    HA.change_group_state(3, {'on': False})
+    HA.change_group_state(4, {'on': False})
+    HA.change_group_state(5, {'on': False})
 
     # send back to lights page
     return redirect("./lights")
 
 
-@app.route('/api/v1/resources/lightstatus', methods=['GET'])
+@app.route('/api/lightstatus', methods=['GET'])
 def lightstatus():
 
     light = request.args.get('light')
+    if not light.isdigit():
+        return BAD_INPUT
 
-    return requests.get(url() + f'/lights/{light}').json()
+    return HA.get_lights(light)
 
 
-@app.route('/api/v1/resources/lightonoff', methods=['GET', 'POST'])
+@app.route('/api/lightonoff', methods=['GET', 'POST'])
 def lightonoff():
 
     light = request.args.get('light')
 
-    onoff = request.args.get('onoff')
+    onoff = request.args.get('onoff').lower()
 
-    if request.args.get('onoff') == 'on':
+    if not light.isdigit():
+        return BAD_INPUT
+
+    if onoff == 'on':
         onoff = True
-    elif request.args.get('onoff') == 'off':
+    elif onoff == 'off':
         onoff = False
+    else:
+        return BAD_INPUT
 
-    requests.put(url() + f"/lights/{light}/state", json={'on': onoff})
+    HA.change_light_state(light, {'on': onoff})
 
-    return requests.get(url() + f"/lights/{light}").json()
+    return HA.get_lights(light)
 
 
-@app.route('/api/v1/resources/roomstatus', methods=['GET'])
+@app.route('/api/roomstatus', methods=['GET'])
 def roomstatus():
-
+    
     room = request.args.get('room')
+    if not room.isdigit():
+        return BAD_INPUT
 
-    return requests.get(url() + f"/groups/{room}").json()
+    return HA.get_groups(room)
 
 
-@app.route('/api/v1/resources/roomonoff', methods=['GET'])
+@app.route('/api/roomonoff', methods=['GET'])
 def roomonoff():
 
     room = request.args.get('room')
 
-    onoff = request.args.get('onoff')
+    if not room.isdigit():
+        return BAD_INPUT
 
-    if request.args.get('onoff') == 'on':
+    onoff = request.args.get('onoff').lower()
+
+    if onoff == 'on':
         onoff = True
-    elif request.args.get('onoff') == "off":
+    elif onoff == "off":
         onoff = False
+    else:
+        return BAD_INPUT
 
-    requests.put(url() + f"/groups/{room}/action", json={'on': onoff})
+    HA.change_group_state(room, {'on': onoff})
 
-    return requests.get(url() + f"/groups/{room}").json()
+    return HA.get_groups(room)
 
 
-@app.route('/api/v1/resources/roomintens', methods=['GET'])
+@app.route('/api/roomintens', methods=['GET'])
 def roomintens():
 
     room = request.args.get('room')
 
+    if not room.isdigit():
+        return BAD_INPUT
+
     intens = request.args.get('intens')
 
-    requests.put(url() + f"/groups/{room}/action", json={'bri': int(intens)})
+    if not intens.isdigit():
+        return BAD_INPUT
+    elif not 1 <= int(intens) <= 254:
+        return BAD_INPUT
 
-    return requests.get(url() + f"/groups/{room}").json()
+    HA.change_group_state(room, {'bri': int(intens)})
+
+    return HA.get_groups(room)
 
 
-@app.route('/api/v1/resources/lightintens', methods=['GET'])
+@app.route('/api/lightintens', methods=['GET'])
 def lightintens():
 
     light = request.args.get('light')
+    if not light.isdigit():
+        return BAD_INPUT
 
     intens = request.args.get('intens')
+    if not intens.isdigit():
+        return BAD_INPUT
+    elif not 1 <= int(intens) <= 254:
+        return BAD_INPUT
 
-    requests.put(url() + f"/lights/{light}/state", json={'bri': int(intens)})
+    HA.change_light_state(light, {'bri': int(intens)})
 
-    return requests.get(url() + f"/lights/{light}").json()
+    return HA.get_lights(light)
 
 
-@app.route('/api/v1/resources/sunrisesunset', methods=['GET'])
+@app.route('/api/sunrisesunset', methods=['GET'])
 def ssStatus():
     returnDict = {
         "sunrise": "",
@@ -315,18 +319,18 @@ def ssStatus():
         returnDict["sunset"] = "Unable to get time"
     # "Turn On Outside"
     # "Turn Off Outside"
-    schedules = requests.get(f"{url()}/schedules").json()
+    schedules = HA.get_schedules()
     for i in schedules:
         if schedules[i]["name"] == "Turn On Outside":
             returnDict["outsideOn"] = schedules[i]["localtime"]
         elif schedules[i]["name"] == "Turn Off Outside":
             returnDict["outsideOff"] = schedules[i]["localtime"]
 
-    sensor7 = requests.get(f"{url()}/sensors/7").json()
+    sensor7 = HA.get_sensors(7)
     returnDict["sensorStatus"] = str(sensor7["state"]["flag"])
     timezoneInt = getTimeZone()
     if timezoneInt['isSuccess']:
-        timezone = dt.timedelta(hours=abs(timezoneInt))
+        timezone = dt.timedelta(hours=abs(timezoneInt['tz']))
     else:
         timezone = dt.timedelta(hours=6)
     sensorDateTime = dt.datetime.fromisoformat(sensor7["state"]["lastupdated"])
@@ -340,3 +344,11 @@ def ssStatus():
 def outsideStatus():
     info = ssStatus()
     return render_template("./outsidestatus.html", header=headerinfo(), dict=info)
+
+
+if __name__ == "__main__":
+    # Testing
+    # app.run(debug=True)
+    # Production
+    app.run(host="0.0.0.0")
+    # print(ssStatus())

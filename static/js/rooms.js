@@ -23,7 +23,7 @@
 
 const lightonoff = (room, onoff) => {
     let xhttp = new XMLHttpRequest;
-    xhttp.open('GET', '/api/v1/resources/roomonoff?room=' + room + "&onoff=" + onoff, true)
+    xhttp.open('GET', '/api/roomonoff?room=' + room + "&onoff=" + onoff, true)
     xhttp.send();
     xhttp.onload = function () {
         if (this.status === 200){
@@ -47,7 +47,7 @@ const roomonoff = (id) => {
 
 const roomchange = (room, intens) => {
     let xhttp = new XMLHttpRequest;
-    xhttp.open('GET', '/api/v1/resources/roomintens?room=' + room + "&intens=" + intens, true)
+    xhttp.open('GET', '/api/roomintens?room=' + room + "&intens=" + intens, true)
     xhttp.send();
     xhttp.onload = function () {
         if (this.status === 200){
