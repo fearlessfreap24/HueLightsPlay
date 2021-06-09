@@ -12,6 +12,30 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <!-- Adding a favicon icon to Flask app -->
+    <!-- SEE: https://favicon.io/favicon-converter/-->
+
+    <link rel="shortcut icon"
+    href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <link rel="apple-touch-icon"
+    sizes="180x180"
+    href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+
+    <link rel="icon"
+    type="image/png"
+    sizes="180x180"
+    href="{{ url_for('static', filename='favicon-32x32.png') }}">
+
+    <link rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="{{ url_for('static', filename='favicon-16x16.png') }}">
+
+    <link rel="manifest"
+    href="site.webmanifest">
+
 </head>
 <body>
     <header>
