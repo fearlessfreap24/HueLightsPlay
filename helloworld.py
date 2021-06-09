@@ -348,7 +348,7 @@ def outsideStatus():
 
 if __name__ == "__main__":
     # Testing
-    app.run(debug=True)
+    # app.run(debug=True)
     # Production
-    # app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0")
     # print(ssStatus())
