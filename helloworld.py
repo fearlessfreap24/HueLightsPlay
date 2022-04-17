@@ -44,7 +44,7 @@ def getSunRiseSet():
     # get sunrise/sunset info and apply timezone
     sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
     # sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
-    sunriseSetCall = requests.get(sunRiseSetAddress)
+    sunriseSetCall = requests.get(sunRiseSetAddress, verify=False)
     goodApiCall = sunriseSetCall.status_code == 200
     sunriseSet = sunriseSetCall.json()
     if goodApiCall and timezone['isSuccess']:
