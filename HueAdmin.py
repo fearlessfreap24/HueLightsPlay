@@ -9,7 +9,16 @@ HIP = getenv('HUEIP')
 HUEADDRESS = f"http://{HIP}/api/{HK}/"
 
 
-def lights_call(number=0, new=False):
+def lights_call(number:int=0, new:bool=False) -> str:
+    '''
+    returns a string that should be appended to HUEADDRESS to complete call to
+    the lights API.\n
+    Input:\n
+    number - int - default is 0, the number assigned to the light by the hub. 
+    This is the key value in the json output from "/api/<username>/lights"\n
+    new - boolean - default is False, a boolean whether the API should append 
+    "new" to the string for the API call.
+    '''
     if number:
         return f"lights/{number}"
     elif new:
@@ -18,8 +27,16 @@ def lights_call(number=0, new=False):
         return "lights"
 
 
-def get_lights(light=0):
-
+def get_lights(light:int=0) -> dict:
+    '''
+    Calls the lights GET API.\n
+    Input:\n
+    lights - integer - default is 0, the number of the light assigned by the hub. 
+    This is the key value in the json output from "/api/<username>/lights"\n
+    Output:\n
+    returns the JSON data from teh API call if the status code is less than 400 
+    or a None if the status code is greater than or equal to 400
+    '''
     get_lights = req.get(HUEADDRESS + lights_call(light))
     if get_lights.status_code >= 400:
         return
@@ -224,5 +241,20 @@ def update_rule(number: int, attribs: dict):
         print(json.dumps(update_rule.json(), indent=2))
 
 
+def delete_light_from_hub(light:int=0) -> bool:
+    '''
+    This will delete the specified light from the hub.\n
+    light - integer - required - the number that is assigned to the light from 
+    the hub. This is the key value in the json output from "/api/<username>/lights"\n
+    The output will be a boolean if the request status code is less than 400.
+    '''
+    assert type(light) == int
+    delete_light = req.delete(HUEADDRESS + f"lights/{light}")
+
+    return delete_light.status_code < 400
+
+
 if __name__ == "__main__":
-    print(json.dumps(get_new_lights(), indent=2))
+    # print(json.dumps(get_new_lights(), indent=2))
+    light = 2
+    assert type(light) == int
