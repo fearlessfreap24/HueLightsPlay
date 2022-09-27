@@ -10,3 +10,4 @@
 *.ipynb
 test.py
 __pycache__/*
+*.jpg
