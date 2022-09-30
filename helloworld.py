@@ -4,6 +4,7 @@ from config import Config
 import HueAdmin as HA
 import datetime as dt
 import json
+from players import jj_players
 
 
 app = Flask(__name__)
@@ -346,9 +347,32 @@ def outsideStatus():
     return render_template("./outsidestatus.html", header=headerinfo(), dict=info)
 
 
+@app.route('/jj')
+def bush_rotation():
+    jjp = jj_players()
+    one_day = 86400
+    today = int((dt.datetime.now().timestamp()/one_day)%15)
+    tomm = today+1
+    two_day = today+2
+    spear_grass = jjp.get_spear_grass(today)
+    birthday_bush = jjp.check_bday()
+    purple_smokebush = jjp.jj_players[2]['ign']
+    marmalade_bush = jjp.jj_players[4]['ign']
+    if birthday_bush:
+        butterfy_bush = birthday_bush['ign']
+    else:
+        butterfy_bush = ""
+    return f"""<p>
+    {f'<p><h2>Butterfly Bush</h2></p><p>{birthday_bush}</p>' if birthday_bush else ''}
+    <p><h2>Purple Smokebush</h2></p><p>{purple_smokebush}</p>
+    <p><h2>Marmalade Bush</h2></p><p>{marmalade_bush}</p>
+    <p><h2>Spear Bushes</h2></p><p>{', '.join(spear_grass)}</p>
+    </p>"""
+
+
 if __name__ == "__main__":
     # Testing
     # app.run(debug=True)
     # Production
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", port=5000)
     # print(ssStatus())
