@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Chest Nuts Bush Rotation{% endblock %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jj.css') }}">
+{% endblock %}
+{% block content %}
+{% if dict['has_birthday'] == True %}
+<div id="birthday">
+    <h2 id="birthday_header" class="header">Butterfly Bush</h2>
+    <p class="bush_text">HAPPY BIRTHDAY {{ dict['birthday'] }}!!!!!</p>
+</div>
+{% endif %}
+<div id="purple">
+    <h2 id="purple_header" class="title_header">Purple Smokebush</h2>
+    <p class="bush_text">{{ dict['purple'] }}</p>
+</div>
+<div id="marmalade">
+    <h2 id="marmalade_header" class="title_header">Marmalade Bush</h2>
+    <p class="bush_text">{{ dict['marmalade'] }}</p>
+</div>
+<div id="spear">
+    <h2 id="spear_header" class="title_header">Spear Grass</h2>
+    <p class="bush_text">{{ dict['spear'] }}</p>
+</div>
+{% endblock %}
