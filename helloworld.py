@@ -354,7 +354,7 @@ def bush_rotation():
     today = int((dt.datetime.now().timestamp()/one_day)%15)
     tomm = today+1
     two_day = today+2
-    spear_grass = jjp.get_spear_grass(today)
+    spear_grass = jjp.get_spear_grass()
     birthday_bush = jjp.check_bday()
     purple_smokebush = jjp.jj_players[2]['ign']
     marmalade_bush = jjp.jj_players[4]['ign']
@@ -363,7 +363,7 @@ def bush_rotation():
     else:
         butterfy_bush = ""
     return f"""<p>
-    {f'<p><h2>Butterfly Bush</h2></p><p>{birthday_bush}</p>' if birthday_bush else ''}
+    {f'<p><h2>Butterfly Bush</h2></p><p>{butterfy_bush}</p>' if birthday_bush else ''}
     <p><h2>Purple Smokebush</h2></p><p>{purple_smokebush}</p>
     <p><h2>Marmalade Bush</h2></p><p>{marmalade_bush}</p>
     <p><h2>Spear Bushes</h2></p><p>{', '.join(spear_grass)}</p>
