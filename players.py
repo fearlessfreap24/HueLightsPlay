@@ -100,38 +100,31 @@ class jj_players:
                 return player
         return False
 
-    def check_mando_bush(self, name:str) -> bool:
-        purple = self.jj_players[2]['ign']
-        golden = self.jj_players[4]['ign']
-        myself = self.jj_players[3]['ign']
-
-        return name == purple or name == golden or name == myself
-
-    def spear_grass(self, num:int):
-        grass = self.jj_players[num%15]['ign']
-        while self.check_mando_bush(grass):
-            num += 1
-            grass = self.jj_players[num%15]['ign']
-        return num, grass
-
-    def get_spear_grass(self, day_num:int) -> list:
-        first = self.spear_players[day_num%12]['ign']
-        second = self.spear_players[(day_num+1)%12]['ign']
-        third = self.spear_players[(day_num+2)%12]['ign']
+    def get_spear_grass(self, test_date:dt=False) -> list:
+        one_day = 86400
+        if test_date:
+            today = int((test_date.timestamp()/one_day)%12)
+        else:
+            today = int((dt.now().timestamp()/one_day)%12)
+        first = self.spear_players[today%12]['ign']
+        second = self.spear_players[(today+1)%12]['ign']
+        third = self.spear_players[(today+2)%12]['ign']
 
         return [first, second, third]
 
 if __name__ == "__main__":
+    from datetime import timedelta as td
+    diff = td(days=1)
     one_day = 86400
-    today = int((dt.now().timestamp()/one_day)%15)
-    tomm = today+1
+    today = (dt.now()+diff)+diff
+    tomm = today+diff
+    print(dt.now())
     # two_day = today+2
     # print(jj_players[today])
     # print(jj_players[tomm])
     # print(jj_players[two_day])
     # print(check_bday(True))
     jjp = jj_players()
-    print(today)
-    print(tomm)
-    print(f"today = {', '.join(jjp.get_spear_grass(today))}")
-    print(f"tomm = {', '.join(jjp.get_spear_grass(tomm))}")
+    print(f"realtime spear grass = {jjp.get_spear_grass()}")
+    print(jjp.get_spear_grass(today))
+    print(jjp.get_spear_grass(tomm))
