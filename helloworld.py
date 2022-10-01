@@ -354,25 +354,27 @@ def bush_rotation():
     today = int((dt.datetime.now().timestamp()/one_day)%15)
     tomm = today+1
     two_day = today+2
-    spear_grass = jjp.get_spear_grass()
-    birthday_bush = jjp.check_bday()
-    purple_smokebush = jjp.purple_smokebush['ign']
-    marmalade_bush = jjp.marmalade_bush['ign']
-    if birthday_bush:
-        butterfy_bush = birthday_bush['ign']
+    spear = ', '.join(jjp.get_spear_grass())
+    has_birthday = jjp.check_bday()
+    purple = jjp.purple_smokebush['ign']
+    marmalade = jjp.marmalade_bush['ign']
+    if has_birthday:
+        birthday = has_birthday['ign']
     else:
-        butterfy_bush = ""
-    return f"""<p>
-    {f'<p><h2>Butterfly Bush</h2></p><p>{butterfy_bush}</p>' if birthday_bush else ''}
-    <p><h2>Purple Smokebush</h2></p><p>{purple_smokebush}</p>
-    <p><h2>Marmalade Bush</h2></p><p>{marmalade_bush}</p>
-    <p><h2>Spear Bushes</h2></p><p>{', '.join(spear_grass)}</p>
-    </p>"""
+        birthday = ""
+    info = {
+        'has_birthday':has_birthday,
+        'birthday':birthday,
+        'purple':purple,
+        'marmalade':marmalade,
+        'spear':spear
+    }
+    return render_template("./jj.html", header=headerinfo(), dict=info)
 
 
 if __name__ == "__main__":
     # Testing
-    # app.run(debug=True)
+    # app.run(debug=True, port=5001)
     # Production
     app.run(host="0.0.0.0", port=5000)
     # print(ssStatus())
