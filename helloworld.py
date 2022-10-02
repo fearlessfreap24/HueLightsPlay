@@ -188,7 +188,7 @@ def prebed():
     # dylan's office = 4
     # hallway = 5
     # # change light state
-    HA.change_light_state(12, {'bri': 50})
+    HA.change_light_state(12, {'on': True, 'bri': 50})
     HA.change_light_state(1, {'on': False})
     HA.change_group_state(1, {'on': False})
     HA.change_group_state(3, {'on': False})
