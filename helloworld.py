@@ -155,6 +155,9 @@ def morning():
     # turn on hall lights at half brightness
     HA.change_group_state(5, {'on': True, 'bri': 127})
 
+    # dim Foo Dog lamp
+    HA.change_light_state(7, {'bri': 64})
+
     # send back to lights page
     return redirect("./lights")
 
