@@ -36,8 +36,8 @@ class jj_players:
                 'b_day':21
             },
             {
-                'ign': 'ghostboobster',
-                'b_mon':5,
+                'ign': 'LadyLuck',
+                'b_mon':10,
                 'b_day':13
             },
             {
