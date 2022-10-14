@@ -389,7 +389,7 @@ def bush_rotation():
 
 if __name__ == "__main__":
     # Testing
-    app.run(debug=True, port=5001)
+    # app.run(debug=True, port=5001)
     # Production
-    # app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000)
     # print(ssStatus())
