@@ -4,13 +4,14 @@ from config import Config
 import HueAdmin as HA
 import datetime as dt
 import json
-from players import jj_players
+from db import JJ_DB, JJ_Player
 
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
 BAD_INPUT = {'badInput': True}
+db = JJ_DB()
 
 
 # a dict to pass info for nav bar to jinja
@@ -353,17 +354,27 @@ def outsideStatus():
 
 @app.route('/jj')
 def bush_rotation():
-    jjp = jj_players()
     one_day = 86400
-    today = int((dt.datetime.now().timestamp()/one_day)%15)
-    tomm = today+1
-    two_day = today+2
-    spear = ', '.join(jjp.get_spear_grass())
-    has_birthday = jjp.check_bday()
-    purple = jjp.purple_smokebush['ign']
-    marmalade = jjp.marmalade_bush['ign']
+    today = dt.datetime.now()
+    today_int = int((today.timestamp()/one_day)%15)
+    tomm = today_int+1
+    two_day = today_int+2
+    spear_players = db.get_spear_grass_players()
+    bush_int = int((today.timestamp()/one_day)%12)
+    spear = ", ".join([
+        spear_players[bush_int].ign,
+        spear_players[(bush_int+1)%12].ign,
+        spear_players[(bush_int+2)%12].ign
+        ])
+    has_birthday = db.get_birthday_player(today.month, today.day)
+    purple = db.get_player_from_index(
+        db.get_player_from_name('Dylan').index-1
+    ).ign
+    marmalade = db.get_player_from_index(
+        db.get_player_from_name('Dylan').index+1
+    ).ign
     if has_birthday:
-        birthday = has_birthday['ign']
+        birthday = has_birthday.ign
     else:
         birthday = ""
     info = {
@@ -378,7 +389,7 @@ def bush_rotation():
 
 if __name__ == "__main__":
     # Testing
-    # app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001)
     # Production
-    app.run(host="0.0.0.0", port=5000)
+    # app.run(host="0.0.0.0", port=5000)
     # print(ssStatus())
