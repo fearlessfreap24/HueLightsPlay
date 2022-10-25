@@ -1,6 +1,7 @@
 import sqlite3
 from traceback import format_exc
 from dataclasses import dataclass
+from threading import Lock
 
 @dataclass
 class JJ_Player:
@@ -24,6 +25,7 @@ class JJ_DB:
             self.__conn = sqlite3.connect("jj_db.db", check_same_thread=False)
 
         self.__c = self.__conn.cursor()
+        self.__lock = Lock()
         self.__main()
 
     def __main(self):
@@ -40,6 +42,21 @@ class JJ_DB:
                 )
                 """
             )
+        with self.__conn:
+            try:
+                self.__lock.acquire(True)
+                self.__c.execute(
+                    """
+                    CREATE TABLE IF NOT EXISTS bush_data(
+                        bush_name TEXT,
+                        sender TEXT,
+                        date TEXT,
+                        diamonds INTEGER
+                    )
+                    """
+                )
+            finally:
+                self.__lock.release()
 
     def add_player(self, player: JJ_Player) -> None:
         with self.__conn:
@@ -169,30 +186,59 @@ class JJ_DB:
     def close(self):
         self.__conn.close()
 
+    def load_data(self, data: list[tuple]) -> None:
+        with self.__conn:
+            self.__c.executemany(
+                """
+                INSERT INTO bush_data VALUES(?,?,?,?)
+                """, data
+            )
+
+    def get_diamonds_by_bush(self) -> list:
+        dc = []
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    SELECT bush_name, SUM(diamonds)
+                    FROM bush_data bd
+                    GROUP BY bush_name 
+                    """
+                )
+                dc = self.__c.fetchall()
+        finally:
+            self.__lock.release()
+        return [list(i) for i in dc]
+
+    def get_bush_count(self) -> list:
+        bc = []
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    SELECT bush_name, COUNT(sender) 
+                    FROM bush_data bd 
+                    GROUP BY bush_name 
+                    """
+                )
+                bc = self.__c.fetchall()
+        finally:
+            self.__lock.release()
+        return [list(i) for i in bc]
+
 
     
 if __name__ == "__main__":
     db = JJ_DB()
-    # with open("jj_players.txt", 'r') as f:
+    # with open("./test_data.csv", 'r') as f:
     #     lines = f.readlines()
 
-    # for line in lines:
-    #     line = line.split(',')
-    #     db.add_player(
-    #         JJ_Player(
-    #             int(line[0]),
-    #             line[1],
-    #             line[2],
-    #             line[3],
-    #             int(line[4]),
-    #             int(line[5])
-    #         )
-    #     )
-    print(
-        db.get_player_from_index(
-            db.get_player_from_name("Dylan").index+1
-        )
-    )
+    # line_arr = [tuple(i.split(',')[:4]) for i in lines]
+    # db.load_data(line_arr)
+    print(db.get_diamonds_by_bush())
+    print(db.get_bush_count())
     
     db.close()
 
