@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}Bush Statistics{% endblock %}
+{% block stylesheet %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jj_charts.css') }}">
+<!-- ChartJS CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" 
+    integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" 
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer"></script>
+{% endblock %}
+{% block content %}
+<body>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col">
+                <canvas id="diamonds"></canvas>
+            </div>
+            <div class="col">
+                <canvas id="bushes"></canvas>
+            </div>
+        </div>
+    </div>
+    <script>
+        fetch('/api/v1/get_diamond_numbers')
+        .then(resp => resp.json())
+        .then(ddata => {
+            console.log(ddata)
+            const labels = Object.keys(ddata);
+            const data = {
+              labels: labels,
+              datasets: [{
+                label: 'Diamonds Received by Bush Type',
+                backgroundColor: [
+                'rgb(245,117,240)',
+                'rgb(247,211,63)',
+                'rgb(250,123,39)',
+                'rgb(76,0,153)',
+                'rgb(204,204,0)'
+              ],
+                borderColor: 'rgb(77, 25, 121)',
+                data: Object.values(ddata),
+              }]
+            };
+            const config = {
+                type: 'bar',
+                data: data,
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                  }
+                },
+              };
+    
+            const myChart = new Chart(
+            document.getElementById('diamonds'),
+            config
+            );
+        })
+        fetch('/api/v1/get_bush_count')
+        .then(resp => resp.json())
+        .then(bdata => {
+            console.log(bdata)
+            const labels = Object.keys(bdata)
+            const data = {
+                labels: labels,
+                datasets: [{
+                  label: 'Bush Counts',
+                  data: Object.values(bdata),
+                  backgroundColor: [
+                    'rgb(245,117,240)',
+                    'rgb(247,211,63)',
+                    'rgb(250,123,39)',
+                    'rgb(76,0,153)',
+                    'rgb(204,204,0)'
+                  ],
+                  hoverOffset: 4
+                }]
+              };
+            const config = {
+                type: 'pie',
+                data: data
+            }
+            const myChart = new Chart(
+            document.getElementById('bushes'),
+            config
+            );
+        })
+      
+      </script>
+{% endblock %}
