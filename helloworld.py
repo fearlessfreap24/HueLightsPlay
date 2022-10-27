@@ -4,7 +4,9 @@ from config import Config
 import HueAdmin as HA
 import datetime as dt
 import json
-from db import JJ_DB, JJ_Player
+from db import JJ_DB, JJ_Player, Bush
+from add_bush_form import Add_Bush
+from traceback import format_exc
 
 
 app = Flask(__name__)
@@ -16,7 +18,12 @@ db = JJ_DB()
 
 # a dict to pass info for nav bar to jinja
 def headerinfo():
-    return {'Home': "/", 'Lights': "/lights", 'Special Functions': "/special", 'Rooms': "/rooms"}
+    return {
+        'Home': "/", 
+        'Lights': "/lights", 
+        'Special Functions': "/special", 
+        'Rooms': "/rooms",
+        'JJ': "/add_bush"}
 
 
 def getTimeZone():
@@ -385,6 +392,47 @@ def bush_rotation():
         'spear':spear
     }
     return render_template("./jj.html", header=headerinfo(), dict=info)
+
+
+@app.route('/api/v1/get_bush_count', methods=['GET'])
+def get_bush_count():
+    data = db.get_bush_count()
+    return {x[0]:x[1] for x in data}
+
+
+@app.route('/api/v1/get_diamond_numbers', methods=['GET'])
+def get_diamond_numbers():
+    data = db.get_diamonds_by_bush()
+    return {x[0]:x[1] for x in data}
+
+
+@app.route('/jj_charts')
+def jj_charts():
+    return render_template("./jj_charts.html", header=headerinfo())
+
+
+@app.route('/add_bush', methods=['GET', 'POST'])
+def add_bush():
+    form = Add_Bush()
+    if request.method == "POST":
+        bush = form.bush_type.data
+        date = form.date.data
+        sender = form.sender.data
+        diamonds = form.diamonds.data
+        ribbons = form.ribbons.data
+        new_bush = Bush(bush, sender, date, diamonds, ribbons)
+        try:
+            db.add_bush(new_bush)
+            flash("Success")
+        except Exception:
+            flash(format_exc)
+        return redirect("add_bush")
+    return render_template(
+        "add_bush.html", 
+        form=form, 
+        header=headerinfo(),
+        active="JJ")
+
 
 
 if __name__ == "__main__":
