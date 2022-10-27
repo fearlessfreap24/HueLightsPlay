@@ -1,3 +1,5 @@
 requests
 Flask
 python-dotenv
+Flask-WTF
+WTForms
