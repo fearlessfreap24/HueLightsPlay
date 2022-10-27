@@ -2,6 +2,7 @@ import sqlite3
 from traceback import format_exc
 from dataclasses import dataclass
 from threading import Lock
+from datetime import datetime as dt
 
 @dataclass
 class JJ_Player:
@@ -11,6 +12,20 @@ class JJ_Player:
     location: str
     b_mo: int = 0
     b_day: int = 0
+
+
+@dataclass
+class Bush:
+    bush_type: str
+    sender: str
+    date: float
+    diamonds: int
+    ribbons: int = 0
+
+    def __iter__(self):
+        attribs = ["bush_type", "sender", "date", "diamonds", "ribbons"]
+        for i in range(len(attribs)):
+            yield self.__dict__[attribs[i]]
 
 
 class JJ_DB:
@@ -51,7 +66,8 @@ class JJ_DB:
                         bush_name TEXT,
                         sender TEXT,
                         date TEXT,
-                        diamonds INTEGER
+                        diamonds INTEGER,
+                        ribbons INTEGER
                     )
                     """
                 )
@@ -228,17 +244,43 @@ class JJ_DB:
             self.__lock.release()
         return [list(i) for i in bc]
 
+    def add_bush(self, bush:Bush):
+        with self.__conn:
+            self.__c.execute(
+                """
+                INSERT INTO bush_data VALUES(
+                    ?,?,?,?,?
+                )
+                """, tuple(bush)
+            )
+
+    def get_all_bush_data(self):
+        with self.__conn:
+            self.__c.execute(
+                """
+                SELECT * FROM bush_data
+                """
+            )
+            data = self.__c.fetchall()
+
+        return [list(i) for i in data]
+
 
     
 if __name__ == "__main__":
     db = JJ_DB()
-    # with open("./test_data.csv", 'r') as f:
-    #     lines = f.readlines()
+    # # with open("./test_data.csv", 'r') as f:
+    # #     lines = f.readlines()
 
-    # line_arr = [tuple(i.split(',')[:4]) for i in lines]
-    # db.load_data(line_arr)
-    print(db.get_diamonds_by_bush())
-    print(db.get_bush_count())
+    # # line_arr = [tuple(i.split(',')[:4]) for i in lines]
+    # # db.load_data(line_arr)
+    # print(db.get_diamonds_by_bush())
+    # print(db.get_bush_count())
     
-    db.close()
 
+    bush = Bush("purple", dt.now().timestamp(), "dylan", 10)
+    print(tuple(bush))
+    db.add_bush(bush)
+    print(db.get_all_bush_data())
+
+    db.close()
