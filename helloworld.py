@@ -26,6 +26,7 @@ def headerinfo():
         'JJ': {
             "Bush Rotation": "/jj",
             "Add Bush":"/add_bush",
+            "Players": "/players",
             "Charts": "/jj_charts"
         }}
 
@@ -414,6 +415,18 @@ def get_diamond_numbers():
     return {x[0]:x[1] for x in data}
 
 
+@app.route('/api/v1/get_bush_diamonds', methods=["GET"])
+def get_bush_diamonds():
+    data = db.get_bushes_gave_diamonds()
+    return {x[0]:x[1] for x in data}
+
+
+@app.route('/api/v1/get_player', methods=['GET'])
+def get_players():
+    data = db.get_all_players()
+    return { "players": data }
+
+
 @app.route('/jj_charts')
 def jj_charts():
     return render_template(
@@ -455,6 +468,16 @@ def test_page():
         }}
     return render_template("test_page.html", jj=jj)
 
+
+@app.route('/players')
+def players():
+    players = [list(i) for i in db.get_all_players()]
+    return render_template(
+        "players.html",
+        data=players,
+        header=headerinfo(),
+        active="JJ"
+    )
 
 
 if __name__ == "__main__":
