@@ -46,15 +46,30 @@
                     <!--Links -->
                     <ul class="navbar-nav">
                         {% for i in header %}
-                        {% if active == i %}
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ header[i] }}">{{ i }}</a>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ header[i] }}">{{ i }}</a>
-                        </li>
-                        {% endif %}
+                            {% if i == "JJ" %}
+                                {% if active == "JJ" %}
+                                    <li class="nav-item dropdown active">
+                                {% else %}
+                                    <li class="nav-item dropdown">
+                                {% endif %}
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        JJ
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        {% for j in header[i] %}
+                                            <a class="dropdown-item" href="{{ header[i][j] }}">{{ j }}</a>
+                                        {% endfor %}
+                                    </div>
+                                    </li>
+                            {% elif active == i %}
+                                <li class="nav-item active">
+                                    <a class="nav-link" href="{{ header[i] }}">{{ i }}</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ header[i] }}">{{ i }}</a>
+                                </li>
+                            {% endif %}
                         {% endfor %}
                     </ul>
                 </nav>
