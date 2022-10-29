@@ -13,6 +13,18 @@ class JJ_Player:
     b_mo: int = 0
     b_day: int = 0
 
+    def __iter__(self):
+        attribs = [
+            "index",
+            "name",
+            "ign",
+            "location",
+            "b_mo",
+            "b_day"
+        ]
+        for i in range(len(attribs)):
+            yield self.__dict__[attribs[i]]
+
 
 @dataclass
 class Bush:
@@ -23,15 +35,21 @@ class Bush:
     ribbons: int = 0
 
     def __iter__(self):
-        attribs = ["bush_type", "sender", "date", "diamonds", "ribbons"]
+        attribs = [
+            "bush_type",
+            "sender",
+            "date",
+            "diamonds",
+            "ribbons"
+        ]
         for i in range(len(attribs)):
             yield self.__dict__[attribs[i]]
 
 
 class JJ_DB:
 
-    # TEST = True
-    TEST = False
+    TEST = True
+    # TEST = False
 
     def __init__(self) -> None:
         if JJ_DB.TEST:
@@ -80,18 +98,30 @@ class JJ_DB:
                 """
                 INSERT INTO players
                 VALUES (
-                    :id, :name, :ign, :loc, :b_mo, :b_day
+                    ?, ?, ?, ?, ?, ?
                 )
-                """,
-                {
-                    "id": player.index,
-                    "name": player.name,
-                    "ign": player.ign,
-                    "loc": player.location,
-                    "b_mo": player.b_mo,
-                    "b_day": player.b_day
-                }
+                """, tuple(player)
             )
+
+    def get_all_players(self) -> list:
+
+        with self.__conn:
+            self.__c.execute(
+                """
+                SELECT *
+                FROM players
+                """
+            )
+            players = self.__c.fetchall()        
+
+        return [JJ_Player(
+            player[0],
+            player[1],
+            player[2],
+            player[3],
+            player[4],
+            player[5]
+            ) for player in players]
 
     def get_player_from_index(self, index: int) -> JJ_Player:
 
@@ -268,7 +298,7 @@ class JJ_DB:
 
     
 if __name__ == "__main__":
-    db = JJ_DB()
+    # db = JJ_DB()
     # # with open("./test_data.csv", 'r') as f:
     # #     lines = f.readlines()
 
@@ -277,10 +307,22 @@ if __name__ == "__main__":
     # print(db.get_diamonds_by_bush())
     # print(db.get_bush_count())
     
+    # bush = Bush("purple", dt.now().timestamp(), "dylan", 10)
+    # print(tuple(bush))
 
-    bush = Bush("purple", dt.now().timestamp(), "dylan", 10)
-    print(tuple(bush))
-    db.add_bush(bush)
-    print(db.get_all_bush_data())
+    player = JJ_Player(
+        10,
+        "Chris",
+        "Christian",
+        "Michigan",
+        11,
+        16
+    )
+    print(tuple(player))
+    # db.add_player(player)
+    # print(db.get_all_players())
 
-    db.close()
+    # db.add_bush(bush)
+    # print(db.get_all_bush_data())
+
+    # db.close()
