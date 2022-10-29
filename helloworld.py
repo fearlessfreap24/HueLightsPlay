@@ -23,7 +23,11 @@ def headerinfo():
         'Lights': "/lights", 
         'Special Functions': "/special", 
         'Rooms': "/rooms",
-        'JJ': "/add_bush"}
+        'JJ': {
+            "Bush Rotation": "/jj",
+            "Add Bush":"/add_bush",
+            "Charts": "/jj_charts"
+        }}
 
 
 def getTimeZone():
@@ -391,7 +395,11 @@ def bush_rotation():
         'marmalade':marmalade,
         'spear':spear
     }
-    return render_template("./jj.html", header=headerinfo(), dict=info)
+    return render_template(
+        "./jj.html",
+        header=headerinfo(),
+        dict=info,
+        active="JJ")
 
 
 @app.route('/api/v1/get_bush_count', methods=['GET'])
@@ -408,7 +416,10 @@ def get_diamond_numbers():
 
 @app.route('/jj_charts')
 def jj_charts():
-    return render_template("./jj_charts.html", header=headerinfo())
+    return render_template(
+        "./jj_charts.html",
+        header=headerinfo(),
+        active="JJ")
 
 
 @app.route('/add_bush', methods=['GET', 'POST'])
@@ -421,6 +432,7 @@ def add_bush():
         diamonds = form.diamonds.data
         ribbons = form.ribbons.data
         new_bush = Bush(bush, sender, date, diamonds, ribbons)
+        # print(new_bush)
         try:
             db.add_bush(new_bush)
             flash("Success")
@@ -434,10 +446,20 @@ def add_bush():
         active="JJ")
 
 
+@app.route('/test')
+def test_page():
+    jj = {'JJ': {
+            "Add Bush":"/add_bush",
+            "Charts": "/jj_charts",
+            "Bush Rotation": "/jj"
+        }}
+    return render_template("test_page.html", jj=jj)
+
+
 
 if __name__ == "__main__":
     # Testing
-    # app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001)
     # Production
-    app.run(host="0.0.0.0", port=5000)
+    # app.run(host="0.0.0.0", port=5000)
     # print(ssStatus())
