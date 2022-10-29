@@ -52,7 +52,15 @@
       
           let bar_data = {
               labels: bar_diamonds_labels,
-              datasets: [{
+              datasets: [
+              {
+                type: "line",
+                label: "Number of bushes that gave diamonds",
+                data: bush_diamonds_values,
+                backgroundColor: [
+                  'rgb(0, 0, 0)'
+                ]
+              },{
                   type: "bar",
                   label: "Diamonds Received By Bush Type",
                   data: bar_diamonds_values,
@@ -64,13 +72,6 @@
                       'rgb(204,204,0)'
                   ],
                   borderColor: 'rgb(77, 25, 121)'
-              },{
-                type: "line",
-                label: "Number of bushes that gave diamonds",
-                data: bush_diamonds_values,
-                backgroundColor: [
-                  'rgb(0, 0, 0)'
-                ]
               }]
           }      
           let bar_config = {
