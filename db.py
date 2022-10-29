@@ -48,8 +48,8 @@ class Bush:
 
 class JJ_DB:
 
-    TEST = True
-    # TEST = False
+    # TEST = True
+    TEST = False
 
     def __init__(self) -> None:
         if JJ_DB.TEST:
@@ -93,47 +93,50 @@ class JJ_DB:
                 self.__lock.release()
 
     def add_player(self, player: JJ_Player) -> None:
-        with self.__conn:
-            self.__c.execute(
-                """
-                INSERT INTO players
-                VALUES (
-                    ?, ?, ?, ?, ?, ?
+        try:
+            with self.__conn:
+                self.__lock.acquire(True)
+                self.__c.execute(
+                    """
+                    INSERT INTO players
+                    VALUES (
+                        ?, ?, ?, ?, ?, ?
+                    )
+                    """, tuple(player)
                 )
-                """, tuple(player)
-            )
+        finally:
+            self.__lock.release()
 
     def get_all_players(self) -> list:
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    SELECT *
+                    FROM players
+                    """
+                )
+                players = self.__c.fetchall()
+        finally:
+            self.__lock.release()
 
-        with self.__conn:
-            self.__c.execute(
-                """
-                SELECT *
-                FROM players
-                """
-            )
-            players = self.__c.fetchall()        
-
-        return [JJ_Player(
-            player[0],
-            player[1],
-            player[2],
-            player[3],
-            player[4],
-            player[5]
-            ) for player in players]
+        return players
 
     def get_player_from_index(self, index: int) -> JJ_Player:
-
-        with self.__conn:
-            self.__c.execute(
-                """
-                SELECT *
-                FROM players
-                WHERE id=?
-                """, (index,)
-            )
-            player = self.__c.fetchone()        
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    SELECT *
+                    FROM players
+                    WHERE id=?
+                    """, (index,)
+                )
+                player = self.__c.fetchone()
+        finally:
+            self.__lock.release()
 
         return JJ_Player(
             player[0],
@@ -145,16 +148,19 @@ class JJ_DB:
             )
 
     def get_player_from_name(self, name: str) -> JJ_Player:
-
-        with self.__conn:
-            self.__c.execute(
-                """
-                SELECT *
-                FROM players
-                WHERE name=?
-                """, (name,)
-            )
-            player = self.__c.fetchone()        
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    SELECT *
+                    FROM players
+                    WHERE name=?
+                    """, (name,)
+                )
+                player = self.__c.fetchone()
+        finally:
+            self.__lock.release()
 
         return JJ_Player(
             player[0],
@@ -166,15 +172,19 @@ class JJ_DB:
             )
 
     def get_player_from_ign(self, ign: str) -> JJ_Player:
-        with self.__conn:
-            self.__c.execute(
-                """
-                SELECT *
-                FROM players
-                WHERE ign=?
-                """, (ign,)
-            )
-            player = self.__c.fetchone()        
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    SELECT *
+                    FROM players
+                    WHERE ign=?
+                    """, (ign,)
+                )
+                player = self.__c.fetchone()
+        finally:
+            self.__lock.release()
 
         return JJ_Player(
             player[0],
@@ -186,47 +196,55 @@ class JJ_DB:
             )
 
     def get_spear_grass_players(self) -> list:
-        with self.__conn:
-            self.__c.execute(
-                '''
-                SELECT *
-                FROM v_bush_list
-                '''
-            )
-            s_g = [JJ_Player(
-                i[0],
-                i[1],
-                i[2],
-                i[3],
-                i[4],
-                i[5])
-                for i in self.__c.fetchall()]
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    '''
+                    SELECT *
+                    FROM v_bush_list
+                    '''
+                )
+                s_g = [JJ_Player(
+                    i[0],
+                    i[1],
+                    i[2],
+                    i[3],
+                    i[4],
+                    i[5])
+                    for i in self.__c.fetchall()]
+        finally:
+            self.__lock.release()
 
         return s_g
 
     def get_birthday_player(self, b_mo:int, b_day:int) -> JJ_Player:
-        with self.__conn:
-            self.__c.execute(
-                '''
-                SELECT *
-                FROM players
-                WHERE birth_mo = ?
-                AND birth_d = ?
-                ''',
-                (b_mo, b_day)
-            )
-            bday_players = self.__c.fetchall()
-            if bday_players:
-                bday_players = [
-                    JJ_Player(
-                        i[0],
-                        i[1],
-                        i[2],
-                        i[3],
-                        i[4],
-                        i[5]
-                    ) for i in bday_players
-                ]
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    '''
+                    SELECT *
+                    FROM players
+                    WHERE birth_mo = ?
+                    AND birth_d = ?
+                    ''',
+                    (b_mo, b_day)
+                )
+                bday_players = self.__c.fetchall()
+        finally:
+            self.__lock.release()
+        if bday_players:
+            bday_players = [
+                JJ_Player(
+                    i[0],
+                    i[1],
+                    i[2],
+                    i[3],
+                    i[4],
+                    i[5]
+                ) for i in bday_players
+            ]
         return bday_players
 
     def close(self):
@@ -275,30 +293,56 @@ class JJ_DB:
         return [list(i) for i in bc]
 
     def add_bush(self, bush:Bush):
-        with self.__conn:
-            self.__c.execute(
-                """
-                INSERT INTO bush_data VALUES(
-                    ?,?,?,?,?
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    INSERT INTO bush_data VALUES(
+                        ?,?,?,?,?
+                    )
+                    """, tuple(bush)
                 )
-                """, tuple(bush)
-            )
+        finally:
+            self.__lock.release()
 
     def get_all_bush_data(self):
-        with self.__conn:
-            self.__c.execute(
-                """
-                SELECT * FROM bush_data
-                """
-            )
-            data = self.__c.fetchall()
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    SELECT * FROM bush_data
+                    """
+                )
+                data = self.__c.fetchall()
+        finally:
+            self.__lock.release()
 
         return [list(i) for i in data]
+
+    def get_bushes_gave_diamonds(self) -> list:
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    SELECT bd.bush_name ,COUNT(*) 
+                    FROM bush_data bd 
+                    WHERE bd.diamonds != 0
+                    GROUP BY bd.bush_name ;
+                    """
+                )
+                bc = self.__c.fetchall()
+        finally:
+            self.__lock.release()
+        return [list(i) for i in bc]
+        
 
 
     
 if __name__ == "__main__":
-    # db = JJ_DB()
+    db = JJ_DB()
     # # with open("./test_data.csv", 'r') as f:
     # #     lines = f.readlines()
 
@@ -310,19 +354,19 @@ if __name__ == "__main__":
     # bush = Bush("purple", dt.now().timestamp(), "dylan", 10)
     # print(tuple(bush))
 
-    player = JJ_Player(
-        10,
-        "Chris",
-        "Christian",
-        "Michigan",
-        11,
-        16
-    )
-    print(tuple(player))
+    # player = JJ_Player(
+    #     10,
+    #     "Chris",
+    #     "Christian",
+    #     "Michigan",
+    #     11,
+    #     16
+    # )
+    # print(tuple(player))
     # db.add_player(player)
     # print(db.get_all_players())
 
     # db.add_bush(bush)
     # print(db.get_all_bush_data())
-
-    # db.close()
+    print(db.get_bushes_gave_diamonds())
+    db.close()
