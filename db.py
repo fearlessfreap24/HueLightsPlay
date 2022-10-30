@@ -55,7 +55,7 @@ class JJ_DB:
         if JJ_DB.TEST:
             self.__conn = sqlite3.connect(":memory:", check_same_thread=False)
         else:
-            self.__conn = sqlite3.connect("jj_db.db", check_same_thread=False)
+            self.__conn = sqlite3.connect("./db/jj_db.db", check_same_thread=False)
 
         self.__c = self.__conn.cursor()
         self.__lock = Lock()
