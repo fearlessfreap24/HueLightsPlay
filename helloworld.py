@@ -386,11 +386,11 @@ def bush_rotation():
         db.get_player_from_name('Dylan').index+1
     ).ign
     if has_birthday:
-        birthday = has_birthday.ign
+        birthday = ", ".join([i.ign for i in has_birthday])
     else:
         birthday = ""
     info = {
-        'has_birthday':has_birthday,
+        'has_birthday': bool(has_birthday),
         'birthday':birthday,
         'purple':purple,
         'marmalade':marmalade,
@@ -402,29 +402,6 @@ def bush_rotation():
         dict=info,
         active="JJ")
 
-
-@app.route('/api/v1/get_bush_count', methods=['GET'])
-def get_bush_count():
-    data = db.get_bush_count()
-    return {x[0]:x[1] for x in data}
-
-
-@app.route('/api/v1/get_diamond_numbers', methods=['GET'])
-def get_diamond_numbers():
-    data = db.get_diamonds_by_bush()
-    return {x[0]:x[1] for x in data}
-
-
-@app.route('/api/v1/get_bush_diamonds', methods=["GET"])
-def get_bush_diamonds():
-    data = db.get_bushes_gave_diamonds()
-    return {x[0]:x[1] for x in data}
-
-
-@app.route('/api/v1/get_player', methods=['GET'])
-def get_players():
-    data = db.get_all_players()
-    return { "players": data }
 
 
 @app.route('/jj_charts')
@@ -480,9 +457,38 @@ def players():
     )
 
 
+@app.route('/api/v1/get_bush_count', methods=['GET'])
+def get_bush_count():
+    data = db.get_bush_count()
+    return {x[0]:x[1] for x in data}
+
+
+@app.route('/api/v1/get_diamond_numbers', methods=['GET'])
+def get_diamond_numbers():
+    data = db.get_diamonds_by_bush()
+    return {x[0]:x[1] for x in data}
+
+
+@app.route('/api/v1/get_bush_diamonds', methods=["GET"])
+def get_bush_diamonds():
+    data = db.get_bushes_gave_diamonds()
+    return {x[0]:x[1] for x in data}
+
+
+@app.route('/api/v1/get_player', methods=['GET'])
+def get_players():
+    data = db.get_all_players()
+    return { "players": data }
+
+
+@app.route('/api/v1/get_spear_grass_data')
+def get_spear_grass_numbers():
+    return db.get_spear_grass_data()
+
+
 if __name__ == "__main__":
     # Testing
-    # app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001)
     # Production
-    app.run(host="0.0.0.0", port=5000)
+    # app.run(host="0.0.0.0", port=5000)
     # print(ssStatus())

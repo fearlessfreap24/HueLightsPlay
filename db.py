@@ -338,7 +338,49 @@ class JJ_DB:
             self.__lock.release()
         return [list(i) for i in bc]
         
+    def get_spear_grass_data(self) -> dict:
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                self.__c.execute(
+                    """
+                    SELECT COUNT(bd.ribbons)
+                    FROM bush_data bd;
+                    """
+                )
+                ribbons = self.__c.fetchall()[0][0]
 
+                self.__c.execute(
+                    """
+                    SELECT COUNT(*)
+                    FROM bush_data bd
+                    WHERE bush_name = 'Spear Grass'
+                    AND bd.diamonds > 0;
+                    """
+                )
+
+                diamonds = self.__c.fetchall()[0][0]
+
+                self.__c.execute(
+                    """
+                    SELECT COUNT(*)
+                    FROM bush_data bd
+                    WHERE bush_name = 'Spear Grass';
+                    """
+                )
+                all_spear_grass = self.__c.fetchall()[0][0]
+        finally:
+            self.__lock.release()
+
+        all_spear_grass = float(all_spear_grass)
+        diamonds = float(diamonds)/all_spear_grass
+        ribbons = float(ribbons)/all_spear_grass
+        no_ribbons_no_diamonds = (1-(ribbons+diamonds))
+        return {
+            "spear_grass_none": no_ribbons_no_diamonds,
+            "spear_grass_diamonds" : diamonds,
+            "spear_grass_ribbons" : ribbons
+        }
 
     
 if __name__ == "__main__":
@@ -368,5 +410,5 @@ if __name__ == "__main__":
 
     # db.add_bush(bush)
     # print(db.get_all_bush_data())
-    print(db.get_bushes_gave_diamonds())
+    print(db.get_spear_grass_data())
     db.close()
