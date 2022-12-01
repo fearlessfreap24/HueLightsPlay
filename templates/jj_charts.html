@@ -123,8 +123,13 @@
           document.getElementById('bushes'),
           pie_config
           );
+        let donut_values_inter = [
+          `${donut_data_values[0]*100}%`,
+          `${donut_data_values[1]*100}%`,
+          `${donut_data_values[2]*100}%`
+          ]
         let donut_data_2 = {
-          labels: donut_data_labels,
+          labels: ["Diamonds", "Nothing", "Ribbons"],
           datasets: [{
             label: "Spear Grass Data",
             data: donut_data_values,
