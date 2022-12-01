@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Add a Player{% endblock %}
+{% block content %}
+<form action="/add_player" method="post">
+    <div>{{form.index.label}}: {{form.index}}</div>
+    <div>{{form.name.label}}: {{form.name}}</div>
+    <div>{{form.ign.label}}: {{form.ign}}</div>
+    <div>{{form.location.label}}: {{form.location}}</div>
+    <div>{{form.b_mo.label}}: {{form.b_mo}}</div>
+    <div>{{form.b_day.label}}: {{form.b_day}}</div>
+    <div><button type="submit">Add Player</button><button type="reset">Clear Form</button></div>
+</form>
+{% endblock %}
