@@ -13,6 +13,6 @@ class Add_Bush(FlaskForm):
         )
     date = DateField("Date", validators=[DataRequired()])
     sender = StringField("Sender", validators=[DataRequired(), Length(min=3, max=25)])
-    diamonds = IntegerField("Diamonds",validators=[NumberRange(0,20)])
+    diamonds = IntegerField("Diamonds",validators=[NumberRange(0,20, DataRequired()])
     ribbons = IntegerField("Ribbons",validators=[NumberRange(0,100)])
 
