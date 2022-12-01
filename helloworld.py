@@ -6,6 +6,7 @@ import datetime as dt
 import json
 from db import JJ_DB, JJ_Player, Bush
 from add_bush_form import Add_Bush
+from add_player import Add_Player
 from traceback import format_exc
 
 
@@ -368,15 +369,15 @@ def outsideStatus():
 def bush_rotation():
     one_day = 86400
     today = dt.datetime.now()
-    today_int = int((today.timestamp()/one_day)%15)
-    tomm = today_int+1
-    two_day = today_int+2
+    # today_int = int((today.timestamp()/one_day)%15)
+    # tomm = today_int+1
+    # two_day = today_int+2
     spear_players = db.get_spear_grass_players()
-    bush_int = int((today.timestamp()/one_day)%12)
+    bush_int = int((today.timestamp()/one_day)%len(spear_players))
     spear = ", ".join([
         spear_players[bush_int].ign,
-        spear_players[(bush_int+1)%12].ign,
-        spear_players[(bush_int+2)%12].ign
+        spear_players[(bush_int+1)%len(spear_players)].ign,
+        spear_players[(bush_int+2)%len(spear_players)].ign
         ])
     has_birthday = db.get_birthday_player(today.month, today.day)
     purple = db.get_player_from_index(
@@ -431,6 +432,37 @@ def add_bush():
         return redirect("add_bush")
     return render_template(
         "add_bush.html", 
+        form=form, 
+        header=headerinfo(),
+        active="JJ")
+
+
+@app.route('/add_player', methods=['GET', 'POST'])
+def add_player():
+    form = Add_Player()
+    if request.method == "POST":
+        index = form.index.data
+        name = form.name.data
+        ign = form.ign.data
+        location = form.location.data
+        b_mo = form.b_mo.data
+        b_day = form.b_day.data
+        new_player = JJ_Player(
+            index,
+            name,
+            ign,
+            location,
+            b_mo,
+            b_day
+        )
+        try:
+            db.add_player(new_player)
+            flash("Success")
+        except Exception:
+            flash(format_exc)
+        return redirect("players")
+    return render_template(
+        "add_player.html", 
         form=form, 
         header=headerinfo(),
         active="JJ")
