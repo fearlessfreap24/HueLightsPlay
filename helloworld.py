@@ -9,12 +9,13 @@ from add_bush_form import Add_Bush
 from add_player import Add_Player
 from traceback import format_exc
 
-
+# TEST = True
+TEST = False
 app = Flask(__name__)
 app.config.from_object(Config)
 
 BAD_INPUT = {'badInput': True}
-db = JJ_DB()
+db = JJ_DB(test=TEST)
 
 
 # a dict to pass info for nav bar to jinja
@@ -520,7 +521,7 @@ def get_spear_grass_numbers():
 
 @app.route('/api/v1/livenessprobe')
 def probe():
-    print(f"Liveness Probe - {dt.datetime.now()}")
+    app.logger.info("Liveness Probe")
     return {"probe": True}
 
 

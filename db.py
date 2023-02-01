@@ -51,10 +51,10 @@ class Bush:
 class JJ_DB:
 
     # TEST = True
-    TEST = False
+    # TEST = False
 
-    def __init__(self) -> None:
-        if JJ_DB.TEST:
+    def __init__(self, test=False) -> None:
+        if test:
             self.__conn = sqlite3.connect(":memory:", check_same_thread=False)
         else:
             self.__conn = sqlite3.connect("/mnt/jj/jj_db.db", check_same_thread=False)
