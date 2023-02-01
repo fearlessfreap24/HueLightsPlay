@@ -33,7 +33,7 @@ https://programminghistorian.org/en/lessons/creating-apis-with-python-and-flask#
 I was working on trying to host an API in k8s at work and I found some answers.
 The dilemma was that I had a Flask app and wanted to host it using nginx.
 
-After searching for answers, I found and tutorial on how to do this without k8s. Then, I used docker to create images and the deploy to k8s
+After searching for answers, I found and tutorial on how to do this without k8s. Then, I used docker to create images and then deploy to k8s
 
 I learned that you can host more than 1 container in a pod and that internetworking between the containers in a pod was only localhost.
 
