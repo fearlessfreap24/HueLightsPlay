@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: huelights
+  labels:
+    app: huelights
+spec:
+  selector:
+    matchLabels:
+      app: huelights
+  template:
+    metadata:
+      labels:
+        app: huelights
+    spec:
+      containers:
+      - name: jj
+        image: huelights-jj-db
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        livenessProbe:
+          httpGet:
+            path: /jj
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 600
+        volumeMounts:
+        - mountPath: /mnt/jj
+          name: jj-db
+      volumes:
+      - name: jj-db
+        persistentVolumeClaim:
+          claimName: pvc-huelights
