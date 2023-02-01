@@ -12,6 +12,7 @@ class JJ_Player:
     location: str
     b_mo: int = 0
     b_day: int = 0
+    is_spear: int = 1
 
     def __iter__(self):
         attribs = [
@@ -20,7 +21,8 @@ class JJ_Player:
             "ign",
             "location",
             "b_mo",
-            "b_day"
+            "b_day",
+            "is_spear"
         ]
         for i in range(len(attribs)):
             yield self.__dict__[attribs[i]]
@@ -55,7 +57,7 @@ class JJ_DB:
         if JJ_DB.TEST:
             self.__conn = sqlite3.connect(":memory:", check_same_thread=False)
         else:
-            self.__conn = sqlite3.connect("./db/jj_db.db", check_same_thread=False)
+            self.__conn = sqlite3.connect("/mnt/jj/jj_db.db", check_same_thread=False)
 
         self.__c = self.__conn.cursor()
         self.__lock = Lock()
@@ -71,7 +73,8 @@ class JJ_DB:
                     ign TEXT NOT NULL,
                     location TEXT,
                     birth_mo INTEGER,
-                    birth_d INTEGER
+                    birth_d INTEGER,
+                    is_spear INTEGER
                 )
                 """
             )
@@ -100,7 +103,7 @@ class JJ_DB:
                     """
                     INSERT INTO players
                     VALUES (
-                        ?, ?, ?, ?, ?, ?
+                        ?, ?, ?, ?, ?, ?, ?
                     )
                     """, tuple(player)
                 )
@@ -144,7 +147,8 @@ class JJ_DB:
             player[2],
             player[3],
             player[4],
-            player[5]
+            player[5],
+            player[6]
             )
 
     def get_player_from_name(self, name: str) -> JJ_Player:
@@ -168,7 +172,8 @@ class JJ_DB:
             player[2],
             player[3],
             player[4],
-            player[5]
+            player[5],
+            player[6]
             )
 
     def get_player_from_ign(self, ign: str) -> JJ_Player:
@@ -192,7 +197,8 @@ class JJ_DB:
             player[2],
             player[3],
             player[4],
-            player[5]
+            player[5],
+            player[6]
             )
 
     def get_spear_grass_players(self) -> list:
@@ -211,7 +217,8 @@ class JJ_DB:
                     i[2],
                     i[3],
                     i[4],
-                    i[5])
+                    i[5],
+                    i[6])
                     for i in self.__c.fetchall()]
         finally:
             self.__lock.release()
@@ -242,7 +249,8 @@ class JJ_DB:
                     i[2],
                     i[3],
                     i[4],
-                    i[5]
+                    i[5],
+                    i[6]
                 ) for i in bday_players
             ]
         return bday_players
@@ -410,5 +418,6 @@ if __name__ == "__main__":
 
     # db.add_bush(bush)
     # print(db.get_all_bush_data())
-    print(db.get_spear_grass_data())
+    # print(db.get_spear_grass_data())
+    print(len(db.get_spear_grass_players()))
     db.close()

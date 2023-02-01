@@ -4,6 +4,7 @@ WORKDIR /usr/huelightsapp/
 
 COPY . .
 
-RUN pip install -r requirements.txt
+RUN mkdir -p /mnt/jj \
+&& pip install -r requirements.txt
 
 CMD ["python", "./helloworld.py"]
