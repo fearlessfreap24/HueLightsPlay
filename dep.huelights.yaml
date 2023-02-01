@@ -15,19 +15,30 @@ spec:
     spec:
       containers:
       - name: jj
-        image: huelights-jj-db
+        image: hello:app
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 5000
+        - containerPort: 5001
         livenessProbe:
           httpGet:
-            path: /jj
-            port: 5000
+            path: /api/v1/livenessprobe
+            port: 5001
           initialDelaySeconds: 30
           periodSeconds: 600
         volumeMounts:
         - mountPath: /mnt/jj
           name: jj-db
+      - name: jj-nginx
+        image: hello:nginx
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /api/v1/livenessprobe
+            port: 80
+          initialDelaySeconds: 60
+          periodSeconds: 600
       volumes:
       - name: jj-db
         persistentVolumeClaim:

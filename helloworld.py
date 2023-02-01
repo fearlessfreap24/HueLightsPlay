@@ -518,9 +518,15 @@ def get_spear_grass_numbers():
     return db.get_spear_grass_data()
 
 
+@app.route('/api/v1/livenessprobe')
+def probe():
+    print(f"Liveness Probe - {dt.datetime.now()}")
+    return {"probe": True}
+
+
 if __name__ == "__main__":
     # Testing
-    # app.run(debug=True, port=5001)
+    app.run(debug=True, port=5001)
     # Production
-    app.run(host="0.0.0.0", port=5000)
+    # app.run(host="0.0.0.0", port=5000)
     # print(ssStatus())
