@@ -5,10 +5,10 @@ metadata:
   labels:
     app: huelights
 spec:
-  storageClassName: manual
+  storageClassName: local-storage
   capacity:
     storage: 5Gi
   accessModes:
   - ReadWriteMany
   hostPath:
-    path: /mnt/jj
+    path: /mnt/c/kubernetes

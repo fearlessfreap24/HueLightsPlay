@@ -8,11 +8,11 @@ RUN mkdir -p /mnt/jj \
 && pip install -r requirements.txt
 
 # flask
-# CMD ["python", "./helloworld.py"]
+CMD ["python", "./helloworld.py"]
 
 # WSGI
 # CMD [ "python", "wsgi.py" ]
 
 # gunicorn - add CMD to k8s yaml
-CMD [ "gunicorn", "--bind", "0.0.0.0:5001", "wsgi:app" ]
+# CMD [ "gunicorn", "--bind", "0.0.0.0:5001", "wsgi:app", "--timeout", "90" ]
 

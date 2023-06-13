@@ -3,6 +3,7 @@ from traceback import format_exc
 from dataclasses import dataclass
 from threading import Lock
 from datetime import datetime as dt
+from datetime import timedelta as td
 
 @dataclass
 class JJ_Player:
@@ -55,17 +56,25 @@ class JJ_DB:
 
     def __init__(self, test=False) -> None:
         if test:
-            self.__conn = sqlite3.connect(":memory:", check_same_thread=False)
+            # self.__conn = sqlite3.connect(":memory:", check_same_thread=False)
+            self.__conn = sqlite3.connect(
+                "db/03142023_jj_db.db",
+                check_same_thread=False
+            )
         else:
-            self.__conn = sqlite3.connect("/mnt/jj/jj_db.db", check_same_thread=False)
+            # self.__conn = sqlite3.connect("/mnt/jj/jj_db.db", check_same_thread=False)
+            self.__conn = sqlite3.connect(
+                "db/03142023_jj_db.db",
+                check_same_thread=False
+            )
 
-        self.__c = self.__conn.cursor()
+        # self.__c = self.__conn.cursor()
         self.__lock = Lock()
         self.__main()
 
     def __main(self):
         with self.__conn:
-            self.__c.execute(
+            self.__conn.cursor().execute(
                 """
                 CREATE TABLE IF NOT EXISTS players (
                     id INTEGER PRIMARY Key,
@@ -81,7 +90,7 @@ class JJ_DB:
         with self.__conn:
             try:
                 self.__lock.acquire(True)
-                self.__c.execute(
+                self.__conn.cursor().execute(
                     """
                     CREATE TABLE IF NOT EXISTS bush_data(
                         bush_name TEXT,
@@ -94,12 +103,24 @@ class JJ_DB:
                 )
             finally:
                 self.__lock.release()
+        with self.__conn:
+            try:
+                self.__lock.acquire(True)
+                self.__conn.cursor().execute(
+                    """
+                    CREATE VIEW IF NOT EXISTS v_bush_list AS
+                    SELECT * FROM players p 
+                    WHERE is_spear = 1;
+                    """
+                )
+            finally:
+                self.__lock.release()
 
     def add_player(self, player: JJ_Player) -> None:
         try:
             with self.__conn:
                 self.__lock.acquire(True)
-                self.__c.execute(
+                self.__conn.cursor().execute(
                     """
                     INSERT INTO players
                     VALUES (
@@ -114,13 +135,14 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     """
                     SELECT *
                     FROM players
                     """
                 )
-                players = self.__c.fetchall()
+                players = __c.fetchall()
         finally:
             self.__lock.release()
 
@@ -130,14 +152,15 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     """
                     SELECT *
                     FROM players
                     WHERE id=?
                     """, (index,)
                 )
-                player = self.__c.fetchone()
+                player = __c.fetchone()
         finally:
             self.__lock.release()
 
@@ -155,14 +178,15 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     """
                     SELECT *
                     FROM players
                     WHERE name=?
                     """, (name,)
                 )
-                player = self.__c.fetchone()
+                player = __c.fetchone()
         finally:
             self.__lock.release()
 
@@ -180,14 +204,15 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     """
                     SELECT *
                     FROM players
                     WHERE ign=?
                     """, (ign,)
                 )
-                player = self.__c.fetchone()
+                player = __c.fetchone()
         finally:
             self.__lock.release()
 
@@ -205,7 +230,8 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     '''
                     SELECT *
                     FROM v_bush_list
@@ -219,7 +245,7 @@ class JJ_DB:
                     i[4],
                     i[5],
                     i[6])
-                    for i in self.__c.fetchall()]
+                    for i in __c.fetchall()]
         finally:
             self.__lock.release()
 
@@ -229,7 +255,8 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     '''
                     SELECT *
                     FROM players
@@ -238,7 +265,7 @@ class JJ_DB:
                     ''',
                     (b_mo, b_day)
                 )
-                bday_players = self.__c.fetchall()
+                bday_players = __c.fetchall()
         finally:
             self.__lock.release()
         if bday_players:
@@ -271,14 +298,15 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     """
                     SELECT bush_name, SUM(diamonds)
                     FROM bush_data bd
                     GROUP BY bush_name 
                     """
                 )
-                dc = self.__c.fetchall()
+                dc = __c.fetchall()
         finally:
             self.__lock.release()
         return [list(i) for i in dc]
@@ -288,14 +316,15 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     """
                     SELECT bush_name, COUNT(sender) 
                     FROM bush_data bd 
                     GROUP BY bush_name 
                     """
                 )
-                bc = self.__c.fetchall()
+                bc = __c.fetchall()
         finally:
             self.__lock.release()
         return [list(i) for i in bc]
@@ -304,7 +333,7 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                self.__conn.cursor().execute(
                     """
                     INSERT INTO bush_data VALUES(
                         ?,?,?,?,?
@@ -318,12 +347,13 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     """
                     SELECT * FROM bush_data
                     """
                 )
-                data = self.__c.fetchall()
+                data = __c.fetchall()
         finally:
             self.__lock.release()
 
@@ -333,7 +363,8 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     """
                     SELECT bd.bush_name ,COUNT(*) 
                     FROM bush_data bd 
@@ -341,7 +372,7 @@ class JJ_DB:
                     GROUP BY bd.bush_name ;
                     """
                 )
-                bc = self.__c.fetchall()
+                bc = __c.fetchall()
         finally:
             self.__lock.release()
         return [list(i) for i in bc]
@@ -350,15 +381,16 @@ class JJ_DB:
         try:
             self.__lock.acquire(True)
             with self.__conn:
-                self.__c.execute(
+                __c = self.__conn.cursor()
+                __c.execute(
                     """
                     SELECT COUNT(bd.ribbons)
                     FROM bush_data bd;
                     """
                 )
-                ribbons = self.__c.fetchall()[0][0]
+                ribbons = __c.fetchall()[0][0]
 
-                self.__c.execute(
+                __c.execute(
                     """
                     SELECT COUNT(*)
                     FROM bush_data bd
@@ -367,16 +399,16 @@ class JJ_DB:
                     """
                 )
 
-                diamonds = self.__c.fetchall()[0][0]
+                diamonds = __c.fetchall()[0][0]
 
-                self.__c.execute(
+                __c.execute(
                     """
                     SELECT COUNT(*)
                     FROM bush_data bd
                     WHERE bush_name = 'Spear Grass';
                     """
                 )
-                all_spear_grass = self.__c.fetchall()[0][0]
+                all_spear_grass = __c.fetchall()[0][0]
         finally:
             self.__lock.release()
 
@@ -389,7 +421,56 @@ class JJ_DB:
             "spear_grass_diamonds" : diamonds,
             "spear_grass_ribbons" : ribbons
         }
-
+    
+    def last_7_data(self):
+        now = dt.now()
+        now_ts = now.timestamp()
+        seven_days = (now - td(days=7)).timestamp()
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                __c = self.__conn.cursor()
+                __c.execute(
+                    """
+                    SELECT bush_name,
+                    COUNT(bush_name) as "Total Bushes",
+                    SUM(diamonds) as "Total Diamonds",
+                    SUM(ribbons) as "Total Ribbons" 
+                    FROM bush_data bd 
+                    WHERE date < ?
+                    AND date > ?
+                    GROUP BY bush_name ;
+                    """, (now_ts, seven_days)
+                )
+                data = __c.fetchall()
+        finally:
+            self.__lock.release()
+        return [list(i) for i in data]
+    
+    def last_24_data(self):
+        now = dt.now()
+        now_ts = now.timestamp()
+        seven_days = (now - td(hours=24)).timestamp()
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                __c = self.__conn.cursor()
+                __c.execute(
+                    """
+                    SELECT bush_name,
+                    COUNT(bush_name) as "Total Bushes",
+                    SUM(diamonds) as "Total Diamonds",
+                    SUM(ribbons) as "Total Ribbons" 
+                    FROM bush_data bd 
+                    WHERE date < ?
+                    AND date > ?
+                    GROUP BY bush_name ;
+                    """, (now_ts, seven_days)
+                )
+                data = __c.fetchall()
+        finally:
+            self.__lock.release()
+        return [list(i) for i in data]
     
 if __name__ == "__main__":
     db = JJ_DB()
@@ -419,5 +500,7 @@ if __name__ == "__main__":
     # db.add_bush(bush)
     # print(db.get_all_bush_data())
     # print(db.get_spear_grass_data())
-    print(len(db.get_spear_grass_players()))
+    # print(len(db.get_all_players()))
+    print(db.last_7_data())
+    print(db.last_24_data())
     db.close()

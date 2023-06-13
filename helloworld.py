@@ -1,13 +1,16 @@
 import requests
-from flask import Flask, redirect, render_template, flash, request
-from config import Config
 import HueAdmin as HA
 import datetime as dt
-import json
+from flask import Flask, redirect, render_template, flash, request
+from config import Config
 from db import JJ_DB, JJ_Player, Bush
 from add_bush_form import Add_Bush
 from add_player import Add_Player
 from traceback import format_exc
+from dotenv import load_dotenv
+import json, os
+
+load_dotenv("./.env")
 
 # TEST = True
 TEST = False
@@ -33,16 +36,23 @@ def headerinfo():
         }}
 
 
-def getTimeZone():
+def getTimeZone() -> int:
     # get timezone and whittle it down to an integer
-    timezoneAddress = "http://worldtimeapi.org/api/timezone/America/Chicago"
-    # timezoneAddress = "http://worldtimeapi.org/api/timezone/America/Chicago"
-    timezoneCall = requests.get(timezoneAddress)
-    goodTimeZone = timezoneCall.status_code == 200
+    lat = "32.75"
+    longi = "-97.3333333"
+    try:
+        timezoneAddress = f"https://api.ipgeolocation.io/timezone?apiKey={os.getenv('IPGEO')}&lat={lat}&long={longi}"
+        # timezoneAddress = "http://worldtimeapi.org/api/timezone/America/Chicago"
+        timezoneCall = requests.get(timezoneAddress)
+        goodTimeZone = timezoneCall.status_code <= 400
+    except Exception:
+        goodTimeZone = False
     if goodTimeZone:
         timezoneResults = timezoneCall.json()
-        timezoneDateTime = dt.datetime.fromisoformat(timezoneResults['datetime'])
-        timezoneInt = int(str(timezoneDateTime.tzinfo).split(':')[0][-3:])
+        if timezoneResults['dst_savings']:
+            timezoneInt = timezoneResults['timezone_offset_with_dst']
+        else:
+            timezoneInt = timezoneResults['timezone_offset']
 
         return { 'isSuccess': goodTimeZone, 'tz': timezoneInt }
     else:
@@ -57,9 +67,11 @@ def getSunRiseSet():
     timezone = getTimeZone()
     if timezone['isSuccess']:
         timezoneInt = timezone['tz']
+    else:
+        timezoneInt = 5
     # get sunrise/sunset info and apply timezone
     sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
-    # sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat={lat}&lng={longi}&formatted=0"
+    # sunRiseSetAddress = f"https://api.sunrise-sunset.org/json?lat=32.75&lng=-97.3333333}&formatted=0"
     sunriseSetCall = requests.get(sunRiseSetAddress, verify=False)
     goodApiCall = sunriseSetCall.status_code == 200
     sunriseSet = sunriseSetCall.json()
@@ -105,6 +117,7 @@ def index():
 
 # display lights and light status
 @app.route('/lights')
+
 def lights():
     # get lights information
     dicto = HA.get_lights()
@@ -408,8 +421,12 @@ def bush_rotation():
 
 @app.route('/jj_charts')
 def jj_charts():
+    seven = db.last_7_data()
+    hours24 = db.last_24_data()
     return render_template(
         "./jj_charts.html",
+        hours24=hours24,
+        seven=seven,
         header=headerinfo(),
         active="JJ")
 
@@ -419,12 +436,12 @@ def add_bush():
     form = Add_Bush()
     if request.method == "POST":
         bush = form.bush_type.data
-        date = form.date.data
+        date = dt.datetime.now().timestamp()
         sender = form.sender.data
         diamonds = form.diamonds.data
         ribbons = form.ribbons.data
         new_bush = Bush(bush, sender, date, diamonds, ribbons)
-        # print(new_bush)
+        if TEST: print(new_bush)
         try:
             db.add_bush(new_bush)
             flash("Success")
@@ -514,20 +531,23 @@ def get_players():
     return { "players": data }
 
 
-@app.route('/api/v1/get_spear_grass_data')
+@app.route('/api/v1/get_spear_grass_data', methods=['GET'])
 def get_spear_grass_numbers():
     return db.get_spear_grass_data()
 
 
-@app.route('/api/v1/livenessprobe')
+@app.route('/api/v1/livenessprobe', methods=['GET'])
 def probe():
     app.logger.info("Liveness Probe")
     return {"probe": True}
 
 
 if __name__ == "__main__":
-    # Testing
-    app.run(debug=True, port=5001)
+    if TEST:
+    # # Testing
+        app.run(debug=True, port=5001)
+        # print(getTimeZone())
+    else:
     # Production
-    # app.run(host="0.0.0.0", port=5000)
+        app.run(host="0.0.0.0", port=5000)
     # print(ssStatus())

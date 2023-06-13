@@ -1,1 +1,10 @@
 ./db/archive/*
+.git*
+*.gpg
+.ipynb_checkpoints
+*pycache*
+*.yaml
+./*.csv
+./nginx/*
+todos*
+jj_player*

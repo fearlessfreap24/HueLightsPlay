@@ -15,11 +15,10 @@ spec:
     spec:
       containers:
       - name: jj
-        image: hello:flask
+        image: flask-only
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
-        - containerPort: 80
         livenessProbe:
           httpGet:
             path: /api/v1/livenessprobe

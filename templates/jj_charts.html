@@ -17,10 +17,64 @@
             <div class="col-md">
                 <canvas id="bushes"></canvas>
             </div>
+          </div>
+          <div class="row">
             <div class="col-md">
                 <canvas id="spear_grass"></canvas>
             </div>
-        </div>
+              <div class="col-md">
+                <div id="last7">
+                  <table class="table-striped">
+                    <tr>
+                      <th colspan="4">Bush Data Last 7 Days</th>
+                    </tr>
+                    <tr>
+                      <th class="col-left">Bush</th>
+                      <th>Count</th>
+                      <th>Diamonds</th>
+                      <th>Ribbons</th>
+                    </tr>
+                    {% for row in seven %}
+                    <tr>
+                      {% for i in row %}
+                        {% if i == row[0] %}
+                          <td class="col-left">{{i}}</td>
+                        {% else %}
+                          <td>{{i}}</td>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    {% endfor %}                  
+                  </table>
+                </div>
+                <div id="last24">
+                  <table class="table-striped">
+                    <tr>
+                      <th colspan="4">Bush Data Last 24 hours</th>
+                    </tr>
+                    <tr>
+                      <th class="col-left">Bush</th>
+                      <th>Count</th>
+                      <th>Diamonds</th>
+                      <th>Ribbons</th>
+                    </tr>
+                    {% for row in hours24 %}
+                    <tr>
+                      {% for i in row %}
+                        {% if i == row[0] %}
+                          <td class="col-left">{{i}}</td>
+                        {% else %}
+                          <td>{{i}}</td>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    {% endfor %}                  
+                  </table>
+                </div>                
+              </div>
+          </div>
+    </div>
+    <div class="container text-center">
     </div>
     <script>
       async function get_diamond_number(){
@@ -102,7 +156,7 @@
         let pie_data = {
           labels: bush_count_labels,
           datasets: [{
-            label: "Number of Bushes",
+            label: 'Number of Bushes',
             data: bush_count_values,
             backgroundColor: [
               'rgb(245,117,240)',
