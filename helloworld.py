@@ -213,19 +213,20 @@ def dogzebra():
 
 @app.route('/prebed')
 def prebed():
-    # dylan's bed light = 1
-    # paige's bed light = 12
-    # paige's office = 3
-    # dylan's office = 4
-    # hallway = 5
-    # # change light state
-    HA.change_light_state(12, {'on': True, 'bri': 50})
-    HA.change_light_state(1, {'on': False})
-    HA.change_light_state(7, {'on': False})
+    # Rooms
+    # 1 - Living Room
+    # 2 - Master bedroom
+    # 3 - Paige Office
+    # 4 - Dylan Office
+    # 5 - Hallway
+    # Lights
+    # 12 - Dylan Bedside
     HA.change_group_state(1, {'on': False})
+    HA.change_group_state(2, {'on': False})
     HA.change_group_state(3, {'on': False})
     HA.change_group_state(4, {'on': False})
     HA.change_group_state(5, {'on': False})
+    HA.change_light_state(12, {'on': True, 'bri': 50})
 
     # send back to lights page
     return redirect("./lights")
@@ -267,7 +268,7 @@ def lightonoff():
 def roomstatus():
     
     room = request.args.get('room')
-    if not room.isdigit():
+    if room and not room.isdigit():
         return BAD_INPUT
 
     return HA.get_groups(room)
@@ -386,7 +387,16 @@ def bush_rotation():
     # today_int = int((today.timestamp()/one_day)%15)
     # tomm = today_int+1
     # two_day = today_int+2
-    spear_players = db.get_spear_grass_players()
+    dylan = db.get_player_from_name('Dylan')
+    purple = db.get_player_from_index(dylan.index-1)
+    marmalade = db.get_player_from_index(dylan.index+1)
+    all_players = db.get_all_players()
+    jj_players = [
+        JJ_Player(i[0],i[1],i[2],i[3],i[4],i[5],i[6]) for i in all_players
+    ]
+    spear_players = [
+        i for i in jj_players if i != dylan and i != purple and i != marmalade
+    ]
     bush_int = int((today.timestamp()/one_day)%len(spear_players))
     spear = ", ".join([
         spear_players[bush_int].ign,
@@ -394,12 +404,6 @@ def bush_rotation():
         spear_players[(bush_int+2)%len(spear_players)].ign
         ])
     has_birthday = db.get_birthday_player(today.month, today.day)
-    purple = db.get_player_from_index(
-        db.get_player_from_name('Dylan').index-1
-    ).ign
-    marmalade = db.get_player_from_index(
-        db.get_player_from_name('Dylan').index+1
-    ).ign
     if has_birthday:
         birthday = ", ".join([i.ign for i in has_birthday])
     else:
@@ -407,8 +411,8 @@ def bush_rotation():
     info = {
         'has_birthday': bool(has_birthday),
         'birthday':birthday,
-        'purple':purple,
-        'marmalade':marmalade,
+        'purple':purple.ign,
+        'marmalade':marmalade.ign,
         'spear':spear
     }
     return render_template(

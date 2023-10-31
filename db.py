@@ -15,6 +15,11 @@ class JJ_Player:
     b_day: int = 0
     is_spear: int = 1
 
+    def __eq__(self, __value: object) -> bool:
+        return self.index == __value.index \
+            and self.name == __value.name \
+            and self.ign == __value.ign
+
     def __iter__(self):
         attribs = [
             "index",
@@ -64,7 +69,7 @@ class JJ_DB:
         else:
             # self.__conn = sqlite3.connect("/mnt/jj/jj_db.db", check_same_thread=False)
             self.__conn = sqlite3.connect(
-                "db/03142023_jj_db.db",
+                "/mnt/db/03142023_jj_db.db",
                 check_same_thread=False
             )
 

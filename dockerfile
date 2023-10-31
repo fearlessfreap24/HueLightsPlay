@@ -4,7 +4,7 @@ WORKDIR /usr/huelightsapp/
 
 COPY . .
 
-RUN mkdir -p /mnt/jj \
+RUN mkdir -p /mnt/db \
 && pip install -r requirements.txt
 
 # flask

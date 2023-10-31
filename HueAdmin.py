@@ -34,7 +34,7 @@ def get_lights(light:int=0) -> dict:
     lights - integer - default is 0, the number of the light assigned by the hub. 
     This is the key value in the json output from "/api/<username>/lights"\n
     Output:\n
-    returns the JSON data from teh API call if the status code is less than 400 
+    returns the JSON data from the API call if the status code is less than 400 
     or a None if the status code is greater than or equal to 400
     '''
     get_lights = req.get(HUEADDRESS + lights_call(light))
