@@ -103,7 +103,10 @@ def add_light_to_group(light: int, group: int):
         return
     group_lights = get_group_info['lights']
     group_lights.append(str(light))
-    send_group_update = req.put(HUEADDRESS + light_group, json={'lights': group_lights})
+    send_group_update = req.put(
+        HUEADDRESS + light_group,
+        json={'lights': group_lights}
+        )
     
     return send_group_update.status_code < 400
 
@@ -120,7 +123,10 @@ def remove_light_from_group(light: int, group: int):
     light_index = group_lights.index(str(light))
     del group_lights[light_index]
 
-    send_group_update = req.put(HUEADDRESS + light_group, json={'lights': group_lights})
+    send_group_update = req.put(
+        HUEADDRESS + light_group,
+        json={'lights': group_lights}
+        )
 
     return send_group_update.status_code < 400
 
@@ -149,7 +155,9 @@ def print_groups(number=0):
         if not groups:
             return
         for item in groups:
-            print(f"{item}, {groups[item]['name']}, type = {groups[item]['type']}, {groups[item]['lights']}")
+            stmt = f"{item}, {groups[item]['name']}, type = "
+            stmt += f"{groups[item]['type']}, {groups[item]['lights']}"
+            print(stmt)
 
 
 def print_lights(light=0):
@@ -165,7 +173,9 @@ def print_lights(light=0):
             return
         else:
             for item in lights:
-                print(f"{item}, {lights[item]['name']}, on = {lights[item]['state']['on']}")
+                stmt = f"{item}, {lights[item]['name']}, on = "
+                stmt += f"{lights[item]['state']['on']}"
+                print(stmt)
 
 
 def print_sensors(number=0):
@@ -173,14 +183,18 @@ def print_sensors(number=0):
         sensors = get_sensors(number)
         if not sensors:
             return
-        print(f"{sensors['name']}, enabled = {sensors['config']['on']}, state = {sensors['state']['flag']}")
+        stmt = f"{sensors['name']}, enabled = "
+        stmt += f"{sensors['config']['on']}, state = "
+        stmt += f"{sensors['state']['flag']}"
+        print(stmt)
 
     else:
         sensors = get_sensors()
         if not sensors:
             return
         for item in sensors:
-            print_statement = f"{item}, {sensors[item]['name']}, enabled = {sensors[item]['config']['on']}"
+            print_statement = f"{item}, {sensors[item]['name']}, enabled = "
+            print_statement += f"{sensors[item]['config']['on']}"
             if 'flag' in sensors[item]['state']:
                 print_statement += f", state = {sensors[item]['state']['flag']}"
             print(print_statement)
@@ -197,7 +211,10 @@ def toggle_sensor7():
     sensor7 = get_sensors(7)
     sensor7_state = sensor7['state']['flag']
     
-    update_sensor7 = req.put(HUEADDRESS + "sensors/7", json={'state': {'flag': not sensor7_state}})
+    update_sensor7 = req.put(
+        HUEADDRESS + "sensors/7",
+        json={'state': {'flag': not sensor7_state}}
+        )
     print(json.dumps(get_sensors(7), indent=2))
 
 
@@ -256,5 +273,16 @@ def delete_light_from_hub(light:int=0) -> bool:
 
 if __name__ == "__main__":
     # print(json.dumps(get_new_lights(), indent=2))
-    light = 2
-    assert type(light) == int
+    # light = 2
+    # assert type(light) == int
+    header = {'hue-application-key': HK}
+    sess = req.session()
+    sess.headers = header
+    lights = sess.get(
+        f"https://{HIP}/clip/v2/resource/light",
+        verify=False
+        )
+    if lights.status_code == 200:
+        my_light = [i for i in lights.json()['data'] if i['id_v1'] == "/lights/22"]
+        print(json.dumps(my_light, indent = 4))
+    else: print(lights.status_code)
