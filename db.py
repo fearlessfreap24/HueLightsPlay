@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, json
 from traceback import format_exc
 from dataclasses import dataclass
 from threading import Lock
@@ -148,6 +148,33 @@ class JJ_DB:
                     """
                 )
                 players = __c.fetchall()
+        finally:
+            self.__lock.release()
+
+        return players
+
+    def get_all_players_obj(self) -> list:
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                __c = self.__conn.cursor()
+                __c.execute(
+                    """
+                    SELECT *
+                    FROM players
+                    """
+                )
+                players = __c.fetchall()
+                players = [
+                    JJ_Player(
+                        i[0],
+                        i[1],
+                        i[2],
+                        i[3],
+                        i[4],
+                        i[5],
+                        i[6]
+                ) for i in players]
         finally:
             self.__lock.release()
 
@@ -477,8 +504,56 @@ class JJ_DB:
             self.__lock.release()
         return [list(i) for i in data]
     
+    def update_jj_ids(self, num:int):
+        max_id = max([i.index for i in self.get_all_players_obj()])
+        id_list = [(i-1, i) for i in range(num, max_id+1)]
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                __c = self.__conn.cursor()
+                __c.executemany(
+                    """
+                    UPDATE PLAYERS
+                    SET id = ?
+                    WHERE id = ?;
+                    """,
+                    id_list
+                )
+        finally:
+            self.__lock.release()
+        # for i in id_list:
+        #     print(i)
+
+    def remove_player_by_id(self, id: int) -> bool:
+        del_player = self.get_player_from_index(id)
+        print(del_player)
+        try:
+            self.__lock.acquire()
+            with self.__conn:
+                __c = self.__conn.cursor()
+                __c.execute(
+                    """
+                    DELETE FROM players
+                    where id = ?;
+                    """,
+                    (id,)
+                )
+        finally:
+            self.__lock.release()
+        self.update_jj_ids(id+1)
+        try:
+            new_player = self.get_player_from_index(id)
+            print(new_player)
+        except: return True
+        return del_player != new_player
+        
+
 if __name__ == "__main__":
-    db = JJ_DB()
+    import json
+    db = JJ_DB(True)
+    print(db.remove_player_by_id(11))
+    # print(db.get_all_players())
+    # print(json.dumps(db.update_jj_ids(2),indent=4))
     # # with open("./test_data.csv", 'r') as f:
     # #     lines = f.readlines()
 
@@ -506,6 +581,6 @@ if __name__ == "__main__":
     # print(db.get_all_bush_data())
     # print(db.get_spear_grass_data())
     # print(len(db.get_all_players()))
-    print(db.last_7_data())
-    print(db.last_24_data())
+    # print(db.last_7_data())
+    # print(db.last_24_data())
     db.close()
