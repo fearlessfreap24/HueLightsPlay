@@ -184,7 +184,7 @@ def morning():
     HA.change_group_state(5, {'on': True, 'bri': 127})
 
     # dim Foo Dog lamp
-    HA.change_light_state(7, {'bri': 64})
+    HA.change_light_state(24, {'bri': 64})
 
     # send back to lights page
     return redirect("./lights")
@@ -226,7 +226,7 @@ def prebed():
     HA.change_group_state(3, {'on': False})
     HA.change_group_state(4, {'on': False})
     HA.change_group_state(5, {'on': False})
-    HA.change_light_state(12, {'on': True, 'bri': 50})
+    HA.change_light_state(27, {'on': True, 'bri': 50})
 
     # send back to lights page
     return redirect("./lights")
