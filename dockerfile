@@ -5,6 +5,7 @@ WORKDIR /usr/huelightsapp/
 COPY . .
 
 RUN mkdir -p /mnt/db \
+&& python -m pip install --upgrade pip \
 && pip install -r requirements.txt
 
 # flask
