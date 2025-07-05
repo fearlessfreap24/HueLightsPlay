@@ -387,21 +387,20 @@ def bush_rotation():
     # today_int = int((today.timestamp()/one_day)%15)
     # tomm = today_int+1
     # two_day = today_int+2
-    dylan = db.get_player_from_name('Dylan')
-    purple = db.get_player_from_index(dylan.index-1)
-    marmalade = db.get_player_from_index(dylan.index+1)
-    all_players = db.get_all_players()
-    jj_players = [
-        JJ_Player(i[0],i[1],i[2],i[3],i[4],i[5],i[6]) for i in all_players
-    ]
+    all_players = db.get_all_players_obj()
+    a_p_len = len(all_players)
+    dylan = [ i for i in all_players if i.name == "Dylan" ][0]
+    # marmalade = all_players[(dylan.index+1)%a_p_len]
     spear_players = [
-        i for i in jj_players if i != dylan and i != purple and i != marmalade
+        i for i in all_players if i != dylan # and i != purple and i != marmalade
     ]
+    spear_len = len(spear_players)
     bush_int = int((today.timestamp()/one_day)%len(spear_players))
+    purple = spear_players[bush_int].ign
     spear = ", ".join([
-        spear_players[bush_int].ign,
-        spear_players[(bush_int+1)%len(spear_players)].ign,
-        spear_players[(bush_int+2)%len(spear_players)].ign
+        spear_players[(bush_int+1)%spear_len].ign,
+        spear_players[(bush_int+2)%spear_len].ign,
+        spear_players[(bush_int+3)%spear_len].ign
         ])
     has_birthday = db.get_birthday_player(today.month, today.day)
     if has_birthday:
@@ -411,8 +410,8 @@ def bush_rotation():
     info = {
         'has_birthday': bool(has_birthday),
         'birthday':birthday,
-        'purple':purple.ign,
-        'marmalade':marmalade.ign,
+        'purple':purple,
+        # 'marmalade':marmalade.ign,
         'spear':spear
     }
     return render_template(

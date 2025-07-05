@@ -136,6 +136,21 @@ class JJ_DB:
         finally:
             self.__lock.release()
 
+    def add_many_players(self, players: list) -> None:
+        try:
+            with self.__conn:
+                self.__lock.acquire(True)
+                self.__conn.cursor().executemany(
+                    """
+                    INSERT INTO players
+                    VALUES (
+                        ?, ?, ?, ?, ?, ?, ?
+                    )
+                    """, players
+                )
+        finally:
+            self.__lock.release()
+
     def get_all_players(self) -> list:
         try:
             self.__lock.acquire(True)
@@ -523,6 +538,24 @@ class JJ_DB:
             self.__lock.release()
         # for i in id_list:
         #     print(i)
+    
+    def update_jj_ids_plus(self, num:int):
+        max_id = max([i.index for i in self.get_all_players_obj()])
+        id_list = [(i+1, i) for i in range(num, max_id+1)]
+        try:
+            self.__lock.acquire(True)
+            with self.__conn:
+                __c = self.__conn.cursor()
+                __c.executemany(
+                    """
+                    UPDATE PLAYERS
+                    SET id = ?
+                    WHERE id = ?;
+                    """,
+                    id_list[::-1]
+                )
+        finally:
+            self.__lock.release()
 
     def remove_player_by_id(self, id: int) -> bool:
         del_player = self.get_player_from_index(id)
@@ -550,8 +583,55 @@ class JJ_DB:
 
 if __name__ == "__main__":
     import json
+    player = [
+        "MeerkatOverlord",
+        "Detective Ivik",
+        "SherLynn",
+        "ZerepNalyd",
+        "Pandora",
+        "Bullet",
+        "Joana",
+        "Miss Nona",
+        "Found_Myself",
+        "JR",
+        "Feather&Pearls",
+        "Morrigan",
+        "Expelliarmus",
+        "Keith 2"
+    ]
+
+    player_list = [tuple([i[0]+1, i[1], i[1], None, None, None, None]) for i in enumerate(player)]
+    print(json.dumps(player_list, indent=4))
+
+    # player_list = [
+    #     (5, "Cheri", "Juniper Berry", None, None, None, None),
+    #     (6, "Cynthia", "Cynthiaisbummed", None, None, None, None),
+    #     (7, "Jim", "Finders", None, None, None, None),
+    #     (8, "Cammy", "Cammie", None, None, None, None),
+    #     (9, "Bobbi", "Cupcake", None, None, None, None),
+    #     (10, "AMC", "AMC", None, None, None, None),
+    #     (11, "Stephanie", "Epiphany", None, None, None, None),
+    #     (12, "Rhonda", "Minne", None, None, None, None),
+    #     (13, "Dylan", "Zerep Nalyd", None, None, None, None),
+    #     (14, "", "Rov ostrov", None, None, None, None),
+    #     (15, "", "Gonnfindityay", None, None, None, None)
+    # ]
+
+    # print(json.dumps(player_list, indent=4))
+
+
     db = JJ_DB(True)
-    print(db.remove_player_by_id(11))
+    # # all_players = db.get_all_players_obj()
+    # # dylan = [i for i in all_players if i.name == "Dylan"][0]
+    # # bushes = [
+    # #     i for i in all_players if i.index == (dylan.index+1)%len(all_players)
+    # #     or i.index == (dylan.index+2)%len(all_players)
+    # # ]
+    # # for i in bushes: print(i)
+    # db.add_many_players(player_list)
+    # db.update_jj_ids_plus(3)
+    # db.update_jj_ids(3)
+    # print(db.remove_player_by_id(9))
     # print(db.get_all_players())
     # print(json.dumps(db.update_jj_ids(2),indent=4))
     # # with open("./test_data.csv", 'r') as f:
@@ -564,19 +644,19 @@ if __name__ == "__main__":
     
     # bush = Bush("purple", dt.now().timestamp(), "dylan", 10)
     # print(tuple(bush))
-
-    # player = JJ_Player(
-    #     10,
-    #     "Chris",
-    #     "Christian",
-    #     "Michigan",
-    #     11,
-    #     16
-    # )
-    # print(tuple(player))
-    # db.add_player(player)
+    # db.update_jj_ids_plus(3)
+    player = JJ_Player(
+        15,
+        "Lotvia",
+        "Lotvia",
+        None,
+        None,
+        None
+    )
+    print(tuple(player))
+    db.add_player(player)
     # print(db.get_all_players())
-
+    # db.remove_player_by_id(11)
     # db.add_bush(bush)
     # print(db.get_all_bush_data())
     # print(db.get_spear_grass_data())
@@ -584,3 +664,6 @@ if __name__ == "__main__":
     # print(db.last_7_data())
     # print(db.last_24_data())
     db.close()
+    # arr = [1, 2]
+    # print(arr)
+    # print(arr[::-1])
