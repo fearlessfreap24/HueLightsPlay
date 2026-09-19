@@ -601,7 +601,7 @@ if __name__ == "__main__":
     ]
 
     player_list = [tuple([i[0]+1, i[1], i[1], None, None, None, None]) for i in enumerate(player)]
-    print(json.dumps(player_list, indent=4))
+    # print(json.dumps(player_list, indent=4))
 
     # player_list = [
     #     (5, "Cheri", "Juniper Berry", None, None, None, None),
@@ -645,18 +645,18 @@ if __name__ == "__main__":
     # bush = Bush("purple", dt.now().timestamp(), "dylan", 10)
     # print(tuple(bush))
     # db.update_jj_ids_plus(3)
-    player = JJ_Player(
-        15,
-        "Lotvia",
-        "Lotvia",
-        None,
-        None,
-        None
-    )
-    print(tuple(player))
-    db.add_player(player)
+    # player = JJ_Player(
+    #     15,
+    #     "Lotvia",
+    #     "Lotvia",
+    #     None,
+    #     None,
+    #     None
+    # )
+    # print(tuple(player))
+    # db.add_player(player)
     # print(db.get_all_players())
-    # db.remove_player_by_id(11)
+    # db.remove_player_by_id(6)
     # db.add_bush(bush)
     # print(db.get_all_bush_data())
     # print(db.get_spear_grass_data())
